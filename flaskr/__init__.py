@@ -8,8 +8,6 @@ def create_app(test_config=None):
     app = Flask(__name__)
     app.secret_key = "your_secret_key"
 
-    # build all routings
-
     # a simple page that says hello
     @app.route('/hello')
     def hello():
@@ -18,5 +16,13 @@ def create_app(test_config=None):
     @app.route('/login')
     def route_login():
         return login.login()
+
+    @app.route('/callback')
+    def route_callback():
+        return login.callback()
+
+    @app.route('/operations')
+    def route_operations():
+        return login.operations()
 
     return app
