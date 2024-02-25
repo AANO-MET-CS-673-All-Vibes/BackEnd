@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, session
 import spotipy, json
 from spotipy.oauth2 import SpotifyOAuth
+from flaskr import account
 
 # Spotify API credentials
 SPOTIFY_CLIENT_ID = '710ea14ca1d949bda4e072ff4a4ebd21'
@@ -27,20 +28,12 @@ def operations():
     if not token_info:
         return redirect('/login')
 
-    output = ""
-    
     sp = spotipy.Spotify(auth=token_info['access_token'])
     profile = sp.me()
-    top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range='medium_term')
+    #top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range='medium_term')
 
-    output += "User name: " + profile["display_name"] + "<br>"
-    output += "Email: " + profile["email"] + "<br>"    # i think we can use this email to keep track of users instead of making them manually type it on a signup form
-
-    output += "Top 50 tracks from the past 6 months: <ol>"
-
-    for track in top_tracks["items"]:
-        output += "<li>" + track["name"] + " - " + track["artists"][0]["name"] + "</li>"
-
-    output += "</ol>"
-
-    return output
+    # first we need to check if this account exists from the email
+    if account.exists(profile["email"]):
+        return redirect("/home")    # TODO: main page where you're matched with people
+    else:
+        return redirect("/create")  # TODO: page where you create your profile for the first time

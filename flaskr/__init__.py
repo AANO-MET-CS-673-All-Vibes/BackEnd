@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from flaskr import login
+from flaskr import login, account
 
 def create_app(test_config=None):
     # create and configure the app
