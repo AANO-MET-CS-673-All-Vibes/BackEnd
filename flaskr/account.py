@@ -3,6 +3,11 @@ import pymysql, spotipy
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
 
+# TO AMRUTHA: FEEL FREE TO REWRITE ALL OF THE DATABASE INTERACTIONS AS YOU SEE FIT
+# in this prototype architecture, we just depend on a MySQL table called "accounts"
+# the columns in this table rn are name and email, but will someday include gender,
+# sexuality, bio, profile pic, top tracks/artists, etc
+
 # exists(): this method determines if an account exists or not
 # Parameter: email - email associated with this account
 # Return: Boolean
