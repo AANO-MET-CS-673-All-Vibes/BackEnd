@@ -1,18 +1,18 @@
 from flask import Flask, redirect, url_for, request, session
 import pymysql, spotipy
 
+db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
+
 # exists(): this method determines if an account exists or not
 # Parameter: email - email associated with this account
 # Return: Boolean
 
 def exists(email):
-    db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
     cursor = db.cursor()
     
     count = cursor.execute("SELECT * FROM accounts WHERE email=\"" + email + "\"")
 
     cursor.close()
-    db.close()
 
     if count == 0:
         return False
@@ -30,7 +30,6 @@ def create():
     if request.method == 'POST':
         # HTTP POST request
         # here we're saving the user's submitted form into the database
-        db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
         cursor = db.cursor()
 
         rows = cursor.execute("INSERT INTO accounts ( name, email ) VALUES ( \"" + request.form["name"] + "\", \"" + profile["email"] + "\" )")
@@ -39,7 +38,6 @@ def create():
         
         db.commit()
         cursor.close()
-        db.close()
         
         return "<h1>Created a new account</h1>"
 
