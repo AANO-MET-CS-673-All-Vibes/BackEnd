@@ -21,9 +21,9 @@ def create_app(test_config=None):
     def route_callback():
         return login.callback()
 
-    @app.route('/operations')
-    def route_operations():
-        return login.operations()
+    #@app.route('/operations')
+    #def route_operations():
+    #    return login.operations()
 
     @app.route("/create", methods=["GET", "POST"])
     def route_create():

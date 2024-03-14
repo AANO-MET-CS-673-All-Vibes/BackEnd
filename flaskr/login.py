@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, session
+from flask import Flask, redirect, request
 import spotipy, json
 from spotipy.oauth2 import SpotifyOAuth
 from flaskr import account
@@ -17,23 +17,19 @@ def login():
 
 def callback():
     sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI, scope=SCOPE)
-    session.clear()
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code)
-    session['token_info'] = token_info
-    return redirect('/operations')
-
-def operations():
-    token_info = session.get('token_info', None)
+    token = token_info["access_token"]
+    
     if not token_info:
-        return redirect('/login')
+        return redirect("/login")
 
-    sp = spotipy.Spotify(auth=token_info['access_token'])
+    sp = spotipy.Spotify(auth=token)
     profile = sp.me()
 
     output = {}
     output["status"] = "ok"
-    output["token"] = token_info["access_token"]
+    output["token"] = token
 
     # check if this account exists from the email
     if account.exists(profile["email"]):
