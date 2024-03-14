@@ -30,10 +30,15 @@ def operations():
 
     sp = spotipy.Spotify(auth=token_info['access_token'])
     profile = sp.me()
-    #top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range='medium_term')
 
-    # first we need to check if this account exists from the email
+    output = {}
+    output["status"] = "ok"
+    output["token"] = token_info["access_token"]
+
+    # check if this account exists from the email
     if account.exists(profile["email"]):
-        return redirect("/home")    # TODO: main page where you're matched with people
+        output["exists"] = True
     else:
-        return redirect("/create")  # TODO: page where you create your profile for the first time
+        output["exists"] = False
+
+    return json.dumps(output)
