@@ -25,3 +25,32 @@ Nevertheless, a successful POST request to `/create` will return the following J
 | ----- | ----------- |
 | status | Should be "ok" |
 
+## Suggested profile retrieval
+TODO: scan for people nearby and recommend them in order of most similar music taste
+
+## Match attempt
+TODO: send a match attempt and then either match or not
+
+## Match list retrieval
+TODO
+
+## Send/receive messages
+TODO
+
+## Retrieve message history
+TODO
+
+## Match profile retrieval
+TODO: retrieve info about someone we alr matched with
+
+## Unmatch
+TODO
+
+## Block/report match
+TODO
+
+## Profile updates
+TODO: this should probably be very similar to account creation; it's nothing more than updating the user's info in the main table
+
+## Event notifications
+TODO
