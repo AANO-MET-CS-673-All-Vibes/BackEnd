@@ -25,6 +25,19 @@ def exists(email):
         return False
     else:
         return True
+    
+# email_to_id(): returns the UUID associated with an email
+    
+def email_to_id(email):
+    cursor = db.cursor()
+    count = cursor.execute("SELECT * FROM account WHERE email=\"" + email + "\"")
+    
+    if count == 0:
+        return None
+    
+    row = cursor.fetchone()
+    cursor.close()
+    return row[0]
 
 # create(): creates a new account
 
@@ -46,7 +59,7 @@ def create():
         return api.response(json.dumps(response))
 
     # now to the user table
-    rows = cursor.execute("INSERT INTO user ( id, name, gender, dob ) VALUES ( \"" + str(id) + "\", \"" + request.form["name"] + "\", \"" + request.form["gender"] + "\", \"" + request.form["dob"] + "\" )")
+    rows = cursor.execute("INSERT INTO user ( id, name, gender, dob, like_count ) VALUES ( \"" + str(id) + "\", \"" + request.form["name"] + "\", \"" + request.form["gender"] + "\", \"" + request.form["dob"] + "\", \"0\" )")
 
     if rows != 1:
         response["status"] = "fail"
@@ -56,10 +69,13 @@ def create():
     db.commit()
 
     response["status"] = "ok"
+    response["id"] = str(id)
     return api.response(json.dumps(response))
 
 def websignup():
     # creating a new account
-    create()
+    output = create()
+    output = json.loads(str(output[0]))
 
-    return redirect("http://127.0.0.1:8080/home")
+    return redirect("http://127.0.0.1:8080/home?id=" + output["id"])
+

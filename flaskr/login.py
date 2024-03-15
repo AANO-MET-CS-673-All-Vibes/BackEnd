@@ -53,6 +53,7 @@ def callback():
     # check if this account exists from the email
     if account.exists(profile["email"]):
         output["exists"] = True
+        output["id"] = account.email_to_id(profile["email"])
     else:
         output["exists"] = False
 
