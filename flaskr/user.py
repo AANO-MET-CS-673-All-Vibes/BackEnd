@@ -5,6 +5,8 @@ from flaskr import api
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
 
+UPDATE_THRESHOLD        = 604800    # update top tracks/artists every week; reasonable when we're 6-month averages
+
 # userinfo: retrieves user info; ID is specified as a GET parameter
 
 def userinfo():
@@ -43,6 +45,29 @@ def userinfo():
 
 # update: this updates the user's top tracks/artists
 def update():
+    response = {}
+
+    # check if we even need to update at all
+    cursor = db.cursor()
+    count = cursor.execute("SELECT * FROM user WHERE id='" + request.form["id"] + "'")
+    if count != 1:
+        response["status"] = "fail"
+        return api.response(json.dumps(response))
+    
+    row = cursor.fetchone()
+
+    last_updated = row[9]
+    now = datetime.now().date()
+    #print("last updated: " + str(last_updated))
+
+    diff = now-last_updated
+
+    # only update if a certain duration has passed since the last update
+    if last_updated is not None and diff.total_seconds() < UPDATE_THRESHOLD:
+        response["status"] = "ok"
+        response["updated"] = False
+        return api.response(json.dumps(response))
+
     sp = spotipy.Spotify(auth=request.form["token"])
     
     raw_top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range="medium_term")
@@ -72,12 +97,17 @@ def update():
     artists_json = json.dumps(top_artists).replace("'", "\\'")
 
     # and update the database
-    cursor = db.cursor()
     cursor.execute("UPDATE user SET top_tracks='" + tracks_json + "' WHERE id='" + request.form["id"] + "'")
     cursor.execute("UPDATE user SET top_artists='" + artists_json + "' WHERE id='" + request.form["id"] + "'")
+
+    # current time
+    date_string = now.strftime("%Y-%m-%d")
+
+    cursor.execute("UPDATE user SET last_updated=\"" + date_string + "\" WHERE id='" + request.form["id"] + "'")
+
     cursor.close()
     db.commit()
 
-    response = {}
     response["status"] = "ok"
+    response["updated"] = True
     return api.response(json.dumps(response))
