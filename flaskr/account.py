@@ -71,6 +71,7 @@ def create():
 
     response["status"] = "ok"
     response["id"] = str(id)
+    response["token"] = request.form["token"]
     return api.response(json.dumps(response))
 
 def websignup():
@@ -78,5 +79,5 @@ def websignup():
     output = create()
     output = json.loads(str(output[0]))
 
-    return redirect("http://127.0.0.1:8080/home?id=" + output["id"])
+    return redirect("http://127.0.0.1:8080/home?id=" + output["id"] + "&token=" + output["token"])
 

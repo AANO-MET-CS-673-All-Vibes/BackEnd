@@ -40,6 +40,10 @@ def create_app(test_config=None):
     @app.route("/userinfo")
     def route_userinfo():
         return user.userinfo()
+    
+    @app.route("/update")
+    def route_update():
+        return user.update()
 
     return app
 

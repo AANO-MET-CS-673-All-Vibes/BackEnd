@@ -32,3 +32,7 @@ def userinfo():
     response["last_online"] = row[10]
 
     return api.response(json.dumps(response))
+
+# update: this updates the user's top tracks/artists
+def update():
+    return api.response("TODO")
