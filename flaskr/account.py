@@ -1,5 +1,7 @@
-from flask import Flask, redirect, url_for, request, session
-import pymysql, spotipy
+from flask import Flask, redirect, url_for, request
+from datetime import datetime
+import pymysql, spotipy, uuid, json
+from flaskr import login, api
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
 
@@ -11,11 +13,11 @@ db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="All
 # exists(): this method determines if an account exists or not
 # Parameter: email - email associated with this account
 # Return: Boolean
-
+ 
 def exists(email):
     cursor = db.cursor()
     
-    count = cursor.execute("SELECT * FROM accounts WHERE email=\"" + email + "\"")
+    count = cursor.execute("SELECT * FROM account WHERE email=\"" + email + "\"")
 
     cursor.close()
 
@@ -24,29 +26,40 @@ def exists(email):
     else:
         return True
 
+# create(): creates a new account
+
 def create():
-    token_info = session.get('token_info', None)
-    if not token_info:
-        return redirect('/login')
+    response = {}
 
-    sp = spotipy.Spotify(auth=token_info['access_token'])
-    profile = sp.me()
+    id = uuid.uuid4()       # first generate a UUID
 
-    if request.method == 'POST':
-        # HTTP POST request
-        # here we're saving the user's submitted form into the database
-        cursor = db.cursor()
+    # account creation date
+    now = datetime.now()
+    date_string = now.strftime("%Y-%m-%d")
 
-        rows = cursor.execute("INSERT INTO accounts ( name, email ) VALUES ( \"" + request.form["name"] + "\", \"" + profile["email"] + "\" )")
-        if rows != 1:
-            return "<h1>Unable to create account</h1>"  # TODO: obviously a nicer error page someday
-        
-        db.commit()
-        cursor.close()
-        
-        return "<h1>Created a new account</h1>"
+    # now add to the initial accounts table
+    cursor = db.cursor()
+    rows = cursor.execute("INSERT INTO account ( id, email, created ) VALUES ( \"" + str(id) + "\", \"" + request.form["email"] + "\", \"" + date_string + "\" )")
 
-    else:
-        # HTTP GET request
-        # here we present the user with a form that allows them to type in their name, birthday, etc
-        return redirect(url_for("static", filename="create.html"))  # TODO: temporary just so i can get this done!!! this will be replaced with the actual frontend
+    if rows != 1:
+        response["status"] = "fail"
+        return api.response(json.dumps(response))
+
+    # now to the user table
+    rows = cursor.execute("INSERT INTO user ( id, name, gender, dob ) VALUES ( \"" + str(id) + "\", \"" + request.form["name"] + "\", \"" + request.form["gender"] + "\", \"" + request.form["dob"] + "\" )")
+
+    if rows != 1:
+        response["status"] = "fail"
+        return api.response(json.dumps(response))
+
+    cursor.close()
+    db.commit()
+
+    response["status"] = "ok"
+    return api.response(json.dumps(response))
+
+def websignup():
+    # creating a new account
+    create()
+
+    return redirect("http://127.0.0.1:8080/home")

@@ -32,6 +32,10 @@ def create_app(test_config=None):
     @app.route("/create", methods=["GET", "POST"])
     def route_create():
         return account.create()
+    
+    @app.route("/websignup", methods=["POST"])
+    def route_websignup():
+        return account.websignup()
 
     @app.route("/home")
     def route_home():

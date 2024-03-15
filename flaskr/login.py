@@ -27,7 +27,7 @@ def weblogin():
     return redirect(auth_url)
 
 def callback():
-    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI, scope=SCOPE)
+    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_WEB_URI, scope=SCOPE)
 
     code = request.args.get("code")
 
@@ -48,6 +48,7 @@ def callback():
     output = {}
     output["status"] = "ok"
     output["token"] = token
+    output["email"] = profile["email"]
 
     # check if this account exists from the email
     if account.exists(profile["email"]):
@@ -56,3 +57,11 @@ def callback():
         output["exists"] = False
 
     return api.response(json.dumps(output))
+
+def token_from_code(code):
+    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI, scope=SCOPE)
+
+    token_info = sp_oauth.get_access_token(code)
+    token = token_info["access_token"]
+
+    return token
