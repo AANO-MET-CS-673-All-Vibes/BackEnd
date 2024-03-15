@@ -39,6 +39,22 @@ Accounts are created via HTTP POST request to `/create`. The minimum information
 | status | Should be "ok" |
 | id | UUID of this user |
 
+## Retrieve user information
+Requests to `/userinfo` with an HTTP GET parameter named `id` will return the following generic information about a user.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" if the user exists |
+| id | The same ID specified in the parameters |
+| name | User's name |
+| dob | Date of birth |
+| gender | 0 = male, 1 = female, anything else = other |
+| bio | User's bio |
+| image | URL to the user's avatar |
+| top_tracks | JSON array of the user's top 10 tracks over the past few months |
+| top_artists | JSON array of the user's top 10 artists over the past few months |
+| last_online | Date/time the user was last online |
+
 ## Suggested profile retrieval
 TODO: scan for people nearby and recommend them in order of most similar music taste
 
