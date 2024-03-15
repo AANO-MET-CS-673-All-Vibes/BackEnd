@@ -17,9 +17,11 @@ def userinfo():
     cursor = db.cursor()
     count = cursor.execute("SELECT * FROM user WHERE id=\"" + id + "\"")
     if count == 0:
-        cursor.close()
-        response["status"] = "fail"
-        return api.response(json.dumps(response))
+        count = cursor.execute("SELECT * FROM user WHERE internal_id=\"" + id + "\"")
+        if count == 0:
+            cursor.close()
+            response["status"] = "fail"
+            return api.response(json.dumps(response))
     
     row = cursor.fetchone()
     response["status"] = "ok"
