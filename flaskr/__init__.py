@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from flaskr import login, account
+from flaskr import login, account, user
 
 def create_app(test_config=None):
     # create and configure the app
@@ -29,7 +29,7 @@ def create_app(test_config=None):
     #def route_operations():
     #    return login.operations()
 
-    @app.route("/create", methods=["GET", "POST"])
+    @app.route("/create", methods=["POST"])
     def route_create():
         return account.create()
     
@@ -37,9 +37,9 @@ def create_app(test_config=None):
     def route_websignup():
         return account.websignup()
 
-    @app.route("/home")
-    def route_home():
-        return "<h1>Placeholder for the home page! For now, this just means we know this account alr exists</h1>"
+    @app.route("/userinfo")
+    def route_userinfo():
+        return user.userinfo()
 
     return app
 
