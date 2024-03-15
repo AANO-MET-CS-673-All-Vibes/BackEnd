@@ -41,7 +41,7 @@ def create_app(test_config=None):
     def route_userinfo():
         return user.userinfo()
     
-    @app.route("/update")
+    @app.route("/update", methods=["POST"])
     def route_update():
         return user.update()
 
