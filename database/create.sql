@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `account` (
 
 CREATE TABLE IF NOT EXISTS `user` (
 	`id` varchar(36) NOT NULL UNIQUE,
+	`internal_id` varchar(36) NOT NULL UNIQUE,
 	`name` varchar(50),
 	`gender` int,
 	`dob` date,
@@ -42,9 +43,9 @@ CREATE TABLE IF NOT EXISTS `message` (
 
 
 ALTER TABLE `user` ADD CONSTRAINT `user_fk0` FOREIGN KEY (`id`) REFERENCES `account`(`id`);
-ALTER TABLE `match` ADD CONSTRAINT `match_fk0` FOREIGN KEY (`id1`) REFERENCES `user`(`id`);
+ALTER TABLE `match` ADD CONSTRAINT `match_fk0` FOREIGN KEY (`id1`) REFERENCES `user`(`internal_id`);
 
-ALTER TABLE `match` ADD CONSTRAINT `match_fk1` FOREIGN KEY (`id2`) REFERENCES `user`(`id`);
-ALTER TABLE `message` ADD CONSTRAINT `message_fk0` FOREIGN KEY (`from`) REFERENCES `user`(`id`);
+ALTER TABLE `match` ADD CONSTRAINT `match_fk1` FOREIGN KEY (`id2`) REFERENCES `user`(`internal_id`);
+ALTER TABLE `message` ADD CONSTRAINT `message_fk0` FOREIGN KEY (`from`) REFERENCES `user`(`internal_id`);
 
-ALTER TABLE `message` ADD CONSTRAINT `message_fk1` FOREIGN KEY (`to`) REFERENCES `user`(`id`);
+ALTER TABLE `message` ADD CONSTRAINT `message_fk1` FOREIGN KEY (`to`) REFERENCES `user`(`internal_id`);
