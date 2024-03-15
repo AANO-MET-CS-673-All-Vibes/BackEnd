@@ -16,6 +16,10 @@ def create_app(test_config=None):
     @app.route('/login')
     def route_login():
         return login.login()
+    
+    @app.route("/weblogin")
+    def route_weblogin():
+        return login.weblogin()
 
     @app.route('/callback')
     def route_callback():
@@ -34,3 +38,4 @@ def create_app(test_config=None):
         return "<h1>Placeholder for the home page! For now, this just means we know this account alr exists</h1>"
 
     return app
+
