@@ -77,6 +77,18 @@ Elements of `top_artists` are defined as follows.
 | genre | Array of strings containing the genres this artist plays; may not be available |
 | image | URL to an avatar for this artist; may not be available |
 
+## Request data update
+To request updating the user's music information from Spotify, the client requests `/update` via HTTP POST request. The data passed in this request are `id` of the user and `token` containing the Spotify token. Ideally, the client calls this function upon every startup, or on every interval.
+
+Note that this simply requests an update, and does not mean that the update *will* happen. The database maintains the time and date of the most recent update, and updates are not undertaken until a certain threshold (3 days at the time of writing this) has passed. This is to avoid spamming Spotify's API as well as the fact that the data averaged out over the past month or six months is unlikely to change in a timeframe lower than the set threshold, saving internet traffic as well.
+
+The returned object informs the client whether the update happened.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" |
+| updated | Boolean value if the update happened |
+
 ## Retrieve suggested matches
 To search for people that the user can "swipe" on, the frontend requests `/recs` for recommendations. Requests are sent via HTTP GET and the parameter `id` of the current user is passed.
 
