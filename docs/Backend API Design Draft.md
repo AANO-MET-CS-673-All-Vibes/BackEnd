@@ -1,5 +1,5 @@
 # allvibes backend plan
-This document is to assist with my own design of the backend portion for the project. I'm planning a backend that is fundamentally nothing more than an API that exposes the functionality we'll provide. This will allow for extra flexibility in the frontend, as well as (potentially in the future) making it easier to separate the web client from the mobile client.
+This document is to assist with my own design of the backend portion for the project. I'm planning a backend that is fundamentally nothing more than an REST-compliant API that exposes the functionality we'll provide. This will allow for extra flexibility in the frontend, as well as (potentially in the future) making it easier to separate the web client from the mobile client.
 
 The main point of this design concept is to reduce the number of redirects within the backend to as little as possible, making frontend development smoother and more responsive with ultimately a lower number of pages.
 
