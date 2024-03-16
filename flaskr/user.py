@@ -5,7 +5,7 @@ from flaskr import api
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
 
-UPDATE_THRESHOLD        = 604800    # update top tracks/artists every week; reasonable when we're 6-month averages
+UPDATE_THRESHOLD        = 259200    # update top tracks/artists every 3 days; reasonable when using one-month averages
 
 # userinfo: retrieves user info; ID is specified as a GET parameter
 
@@ -66,8 +66,8 @@ def update():
 
     sp = spotipy.Spotify(auth=request.form["token"])
     
-    raw_top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range="medium_term")
-    raw_top_artists = sp.current_user_top_artists(limit=25, offset=0, time_range="medium_term")
+    raw_top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range="short_term")
+    raw_top_artists = sp.current_user_top_artists(limit=25, offset=0, time_range="short_term")
 
     # now we filter out all the unnecessary metadata
     # for tracks we only need track name and artist name; for artists we only need their name, photo, and genre
@@ -89,17 +89,20 @@ def update():
         top_artists.append(artist)
 
     # now convert both to JSON
-    tracks_json = json.dumps(top_tracks).replace("'", "\\'")
-    artists_json = json.dumps(top_artists).replace("'", "\\'")
+    tracks_json = json.dumps(top_tracks).replace("'", "\\'").replace("\\\"", "")
+    artists_json = json.dumps(top_artists).replace("'", "\\'").replace("\\\"", "")
+
+    print(tracks_json)
 
     # and update the database
-    cursor.execute("UPDATE user SET top_tracks='" + tracks_json + "' WHERE id='" + request.form["id"] + "'")
-    cursor.execute("UPDATE user SET top_artists='" + artists_json + "' WHERE id='" + request.form["id"] + "'")
+    print(tracks_json)
+    cursor.execute("UPDATE users SET top_tracks='" + tracks_json + "' WHERE id='" + request.form["id"] + "'")
+    cursor.execute("UPDATE users SET top_artists='" + artists_json + "' WHERE id='" + request.form["id"] + "'")
 
     # current time
     date_string = now.strftime("%Y-%m-%d")
 
-    cursor.execute("UPDATE user SET last_updated=\"" + date_string + "\" WHERE id='" + request.form["id"] + "'")
+    cursor.execute("UPDATE users SET last_updated=\"" + date_string + "\" WHERE id='" + request.form["id"] + "'")
 
     cursor.close()
     db.commit()
