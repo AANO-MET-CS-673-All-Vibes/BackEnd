@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from flaskr import login, account, user
+from flaskr import login, account, user, recs
 
 def create_app(test_config=None):
     # create and configure the app
@@ -44,6 +44,10 @@ def create_app(test_config=None):
     @app.route("/update", methods=["POST"])
     def route_update():
         return user.update()
+    
+    @app.route("/recs")
+    def route_recs():
+        return recs.recs()
 
     return app
 
