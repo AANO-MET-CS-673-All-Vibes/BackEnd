@@ -66,8 +66,14 @@ def update():
 
     sp = spotipy.Spotify(auth=request.form["token"])
     
+    # try to get averages over the past month first
     raw_top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range="short_term")
     raw_top_artists = sp.current_user_top_artists(limit=25, offset=0, time_range="short_term")
+
+    # and if that's not enough, then try to the past 6 months
+    if len(raw_top_tracks) < 50 or len(raw_top_artists) < 50:
+        raw_top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range="medium_term")
+        raw_top_artists = sp.current_user_top_artists(limit=25, offset=0, time_range="medium_term")
 
     # now we filter out all the unnecessary metadata
     # for tracks we only need track name and artist name; for artists we only need their name, photo, and genre
