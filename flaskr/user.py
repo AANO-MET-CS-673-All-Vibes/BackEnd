@@ -14,16 +14,8 @@ def userinfo():
 
     response = {}
 
-    cursor = db.cursor()
-    count = cursor.execute("SELECT * FROM user WHERE id=\"" + id + "\"")
-    if count == 0:
-        count = cursor.execute("SELECT * FROM user WHERE internal_id=\"" + id + "\"")
-        if count == 0:
-            cursor.close()
-            response["status"] = "fail"
-            return api.response(json.dumps(response))
-    
-    row = cursor.fetchone()
+    row = get_profile(id)
+
     response["status"] = "ok"
     response["id"] = id
     response["name"] = row[2]
@@ -51,7 +43,7 @@ def update():
 
     # check if we even need to update at all
     cursor = db.cursor()
-    count = cursor.execute("SELECT * FROM user WHERE id='" + request.form["id"] + "'")
+    count = cursor.execute("SELECT * FROM users WHERE id='" + request.form["id"] + "'")
     if count != 1:
         cursor.close()
         response["status"] = "fail"
@@ -128,7 +120,7 @@ def get_internal_id(id):
 
 def get_profile(id):
     cursor = db.cursor()
-    count = cursor.execute("SELECT * FROM users WHERE id='" + id + "'")
+    count = cursor.execute("SELECT * FROM users WHERE id='" + id + "' OR internal_id='" + id + "'")
     if count == 0:
         return None
     
