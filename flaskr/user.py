@@ -63,14 +63,14 @@ def update():
     now = datetime.now().date()
     #print("last updated: " + str(last_updated))
 
-    diff = now-last_updated
-
     # only update if a certain duration has passed since the last update
-    if last_updated is not None and diff.total_seconds() < UPDATE_THRESHOLD:
-        cursor.close()
-        response["status"] = "ok"
-        response["updated"] = False
-        return api.response(json.dumps(response))
+    if last_updated is not None:
+        diff = now-last_updated
+        if diff.total_seconds() < UPDATE_THRESHOLD:
+            cursor.close()
+            response["status"] = "ok"
+            response["updated"] = False
+            return api.response(json.dumps(response))
 
     sp = spotipy.Spotify(auth=request.form["token"])
     
