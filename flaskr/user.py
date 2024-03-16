@@ -118,7 +118,7 @@ def update():
 
 def get_internal_id(id):
     cursor = db.cursor()
-    count = cursor.execute("SELECT * FROM user WHERE id='" + id + "'")
+    count = cursor.execute("SELECT * FROM users WHERE id='" + id + "'")
     if count == 0:
         return None
     

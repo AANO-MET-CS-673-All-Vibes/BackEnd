@@ -11,7 +11,7 @@ db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="All
 
 def is_match(id1, id2):
     cursor = db.cursor()
-    count = cursor.execute("SELECT * FROM match WHERE (id1='" + id1 + "' and id2='" + id2 + "') OR (id1='" + id2 + "' and id2='" + id1 + "')")
+    count = cursor.execute("SELECT * FROM matches WHERE (id1='" + id1 + "' and id2='" + id2 + "') OR (id1='" + id2 + "' and id2='" + id1 + "')")
     cursor.close()
 
     return count != 0

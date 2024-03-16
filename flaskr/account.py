@@ -17,7 +17,7 @@ db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="All
 def exists(email):
     cursor = db.cursor()
     
-    count = cursor.execute("SELECT * FROM account WHERE email=\"" + email + "\"")
+    count = cursor.execute("SELECT * FROM accounts WHERE email=\"" + email + "\"")
 
     cursor.close()
 
@@ -30,7 +30,7 @@ def exists(email):
     
 def email_to_id(email):
     cursor = db.cursor()
-    count = cursor.execute("SELECT * FROM account WHERE email=\"" + email + "\"")
+    count = cursor.execute("SELECT * FROM accounts WHERE email=\"" + email + "\"")
     
     if count == 0:
         return None
@@ -53,14 +53,14 @@ def create():
 
     # now add to the initial accounts table
     cursor = db.cursor()
-    rows = cursor.execute("INSERT INTO account ( id, email, created ) VALUES ( \"" + str(id) + "\", \"" + request.form["email"] + "\", \"" + date_string + "\" )")
+    rows = cursor.execute("INSERT INTO accounts ( id, email, created ) VALUES ( \"" + str(id) + "\", \"" + request.form["email"] + "\", \"" + date_string + "\" )")
 
     if rows != 1:
         response["status"] = "fail"
         return api.response(json.dumps(response))
 
     # now to the user table
-    rows = cursor.execute("INSERT INTO user ( id, internal_id, name, gender, dob, like_count ) VALUES ( \"" + str(id) + "\", \"" + str(internal_id) + "\", \"" + request.form["name"] + "\", \"" + request.form["gender"] + "\", \"" + request.form["dob"] + "\", \"0\" )")
+    rows = cursor.execute("INSERT INTO users ( id, internal_id, name, gender, dob, like_count ) VALUES ( \"" + str(id) + "\", \"" + str(internal_id) + "\", \"" + request.form["name"] + "\", \"" + request.form["gender"] + "\", \"" + request.form["dob"] + "\", \"0\" )")
 
     if rows != 1:
         response["status"] = "fail"
