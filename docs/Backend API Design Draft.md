@@ -51,12 +51,43 @@ Requests to `/userinfo` with an HTTP GET parameter named `id` will return the fo
 | gender | 0 = male, 1 = female, anything else = other |
 | bio | User's bio |
 | image | URL to the user's avatar |
-| top_tracks | JSON array of the user's top 10 tracks over the past few months |
-| top_artists | JSON array of the user's top 10 artists over the past few months |
+| top_tracks | Array of the user's top 10 tracks over the past few months |
+| top_artists | Array of the user's top 10 artists over the past few months |
 | last_online | Date/time the user was last online |
 
-## Suggested profile retrieval
-TODO: scan for people nearby and recommend them in order of most similar music taste
+Elements of `top_tracks` are defined as follows.
+
+| Field | Description |
+| ----- | ----------- |
+| name | Name of the track |
+| artist | Name of the track's artist |
+
+Elements of `top_artists` are defined as follows.
+
+| Field | Description |
+| ----- | ----------- |
+| name | Name of the artist |
+| genre | Array of strings containing the genres this artist plays; may not be available |
+| image | URL to an avatar for this artist; may not available |
+
+## Retrieve suggested matches
+To search for people that the user can "swipe" on, the frontend requests `/recs` for recommendations. The returned object includes a list of people that the user can swipe on, up to 10 top tracks and/or artists shared between the users if avaialble, and a music taste similarity score for each person. The similarity score ranges from 0 to 1, where 0 indicates nothing in common and 1 indicates virtually identical music taste. I recommend the frontend treat values higher than 0.3 as chances for a "good" match for marketing purposes.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" |
+| people | Array of `person` objects, sorted in descending order according to similarity score |
+
+Each `person` object is defined as follows.
+
+| Field | Description |
+| ----- | ----------- |
+| id | User ID, for use with `/userinfo` |
+| score | Music similarity score |
+| artists | Array of up to 10 top artists shared between the two users; may not be available |
+| tracks | Array of up to 10 top tracks shared between the two users; may not be available |
+
+The elements of `artists` and `tracks` are defined in the same way as is defined under `/userinfo`.
 
 ## Match attempt
 TODO: send a match attempt and then either match or not
