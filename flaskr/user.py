@@ -125,3 +125,13 @@ def get_internal_id(id):
     row = cursor.fetchone()
     cursor.close()
     return row[1]
+
+def get_profile(id):
+    cursor = db.cursor()
+    count = cursor.execute("SELECT * FROM users WHERE id='" + id + "'")
+    if count == 0:
+        return None
+    
+    row = cursor.fetchone()
+    cursor.close()
+    return row
