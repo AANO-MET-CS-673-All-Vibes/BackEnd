@@ -71,7 +71,8 @@ Elements of `top_artists` are defined as follows.
 | image | URL to an avatar for this artist; may not be available |
 
 ## Retrieve suggested matches
-To search for people that the user can "swipe" on, the frontend requests `/recs` for recommendations. The returned object includes a list of people that the user can swipe on, up to 10 top tracks and/or artists shared between the users if avaialble, and a music taste similarity score for each person. The similarity score ranges from 0 to 1, where 0 indicates nothing in common and 1 indicates virtually identical music taste. I recommend the frontend treat values higher than 0.3 as chances for a "good" match for marketing purposes.
+To search for people that the user can "swipe" on, the frontend requests `/recs` for recommendations. Requests are sent via HTTP GET and the parameter `id` of the current user is passed.
+The returned object includes a list of people that the user can swipe on, up to 10 top tracks and/or artists shared between the users if avaialble, and a music taste similarity score for each person. The similarity score ranges from 0 to 1, where 0 indicates nothing in common and 1 indicates virtually identical music taste. I recommend the frontend treat values higher than 0.3 as chances for a "good" match for marketing purposes.
 
 | Field | Description |
 | ----- | ----------- |
