@@ -53,6 +53,7 @@ def update():
     cursor = db.cursor()
     count = cursor.execute("SELECT * FROM user WHERE id='" + request.form["id"] + "'")
     if count != 1:
+        cursor.close()
         response["status"] = "fail"
         return api.response(json.dumps(response))
     
@@ -66,6 +67,7 @@ def update():
 
     # only update if a certain duration has passed since the last update
     if last_updated is not None and diff.total_seconds() < UPDATE_THRESHOLD:
+        cursor.close()
         response["status"] = "ok"
         response["updated"] = False
         return api.response(json.dumps(response))
@@ -113,3 +115,13 @@ def update():
     response["status"] = "ok"
     response["updated"] = True
     return api.response(json.dumps(response))
+
+def get_internal_id(id):
+    cursor = db.cursor()
+    count = cursor.execute("SELECT * FROM user WHERE id='" + id + "'")
+    if count == 0:
+        return None
+    
+    row = cursor.fetchone()
+    cursor.close()
+    return row[1]
