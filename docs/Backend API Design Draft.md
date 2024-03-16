@@ -32,12 +32,19 @@ After both successful and unsuccessful authentication, Spotify will redirect to 
 The frontend can then depend on the `exists` field to decide whether to take the user to home screen or the signup screen.
 
 ## Account creation
-Accounts are created via HTTP POST request to `/create`. The minimum information required to create an account are email, name, gender, and date of birth. Gender is stored as an integer, where 0 is male, 1 is female, and any other value is other. Upon successful account creation, the following JSON object is returned.
+Accounts are created via HTTP POST request to `/create` or `/websignup` for mobile and web clients, respectively, again to cope with CORS restrictions much like authentication.
+
+The minimum information required to create an account are email, name, gender, and date of birth. Gender is stored as an integer, where 0 is male, 1 is female, and any other value is other. Upon successful account creation, the following JSON object is returned.
+
+Upon successful account creation, the web-oriented `/websignup` will redirect to `/home` on the client server via HTTP GET with two parameters: `id` and `token`. The client can then store these in cookies to maintain sessions later and to allow access to the remaining functions.
+
+As for the REST-compliant `/create`, the same information is simply returned in a JSON object.
 
 | Field | Description |
 | ----- | ----------- |
 | status | Should be "ok" |
-| id | UUID of this user |
+| id | User ID for the new user |
+| token | Spotify token |
 
 ## Retrieve user information
 Requests to `/userinfo` with an HTTP GET parameter named `id` will return the following generic information about a user.
