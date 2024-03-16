@@ -18,8 +18,8 @@ def similarity(user1, user2):
 
     track_count = 0
     artist_count = 0
-    track_weight = 0.5;
-    artist_weight = 0.5;
+    track_weight = 0.5
+    artist_weight = 0.5
 
     tracks = []
     artists = []
