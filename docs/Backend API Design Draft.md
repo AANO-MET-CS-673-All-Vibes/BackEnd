@@ -126,8 +126,15 @@ The returned object indicates whether or not this action resulted in an immediat
 | status | Should be "ok" |
 | matched | Boolean value |
 
-## Match list retrieval
-TODO
+## Retrieve match list
+The client retrieves a list of matches by requesting `/matches` via HTTP GET. One GET parameter is passed, `id` which contains the ID of the current user. The returned object is defined as follows.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" |
+| people | Array of `person` objects, in descending order of most recently matched |
+
+Each `person` object is defined in the same format as is defined under `/recs`, and thus includes a music taste similarity score, as well as an array of up to 10 top tracks and artists shared between the matches.
 
 ## Send/receive messages
 TODO
