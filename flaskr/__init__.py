@@ -52,6 +52,10 @@ def create_app(test_config=None):
     @app.route("/attempt", methods=["POST"])
     def route_attempt():
         return match.attempt()
+    
+    @app.route("/matches")
+    def route_matches():
+        return match.matches()
 
     return app
 
