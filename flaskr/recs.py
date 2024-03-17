@@ -33,7 +33,7 @@ def similarity(user1, user2):
 
     for i in range(len(artists1)):
         for j in range(len(artists2)):
-            if artists1[i] == artists2[j]:
+            if artists1[i]["name"] == artists2[j]["name"]:
                 if artist_count < 10:
                     artists.append(artists1[i])
                 artist_count = artist_count + 1
