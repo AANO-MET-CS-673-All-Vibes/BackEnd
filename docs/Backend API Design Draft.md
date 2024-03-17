@@ -122,6 +122,7 @@ This function is valid for the IDs returned by `/recs` to like or dislike them. 
 The returned object indicates whether or not this action resulted in an immediate match. If this action did not result in an immediate match, the client uses `/matches` instead to scan an entire list of matches.
 
 | Field | Description |
+| ----- | ----------- | 
 | status | Should be "ok" |
 | matched | Boolean value |
 
