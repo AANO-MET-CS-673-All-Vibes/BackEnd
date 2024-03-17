@@ -3,6 +3,8 @@ This document is to assist with my own design of the backend portion for the pro
 
 The main point of this design concept is to reduce the number of redirects within the backend to as little as possible, making frontend development smoother and more responsive with ultimately a lower number of pages.
 
+For the HTTP GET requests, parameters are specified as GET parameters, that is in the URL itself. As for HTTP POST requests, the expected `Content-Type` is `application/x-www-form-urlencoded`, meaning that the parameters are sent the same manner as a submitted form. 
+
 # 1. List of API functions
 
 ## 1.1 Log in
@@ -16,6 +18,14 @@ In the case of `/login`, the returned JSON object is:
 | ----- | ----------- |
 | status | Should always be "ok" |
 | auth_url | Spotify's API URL to redirect to for authentication |
+
+**Example response:**
+```json
+{
+    "status": "ok",
+    "auth_url": "https://accounts.spotify.com/authorize?client_id=12345&response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%3A5000%2Fcallback&scope=user-read-email+user-read-private+user-top-read"
+}
+```
 
 ## 1.2. Post-authentication
 
@@ -32,6 +42,17 @@ After both successful and unsuccessful authentication, Spotify will redirect to 
 | id | UUID of this user; only valid if `exists==true` |
 
 The frontend can then depend on the `exists` field to decide whether to take the user to home screen or the signup screen.
+
+**Example response:**
+```json
+{
+    "status": "ok",
+    "token": "123456789ABCDEF",
+    "email": "someone@something.com",
+    "exists": true,
+    "id": "c28a0a56-fe90-4341-a6f0-fd7e5da84444"
+}
+```
 
 ## 1.3. Account creation
 Accounts are created via HTTP POST request to `/create` or `/websignup` for mobile and web clients, respectively, again to cope with CORS restrictions much like authentication.
@@ -54,6 +75,15 @@ As for the REST-compliant `/create`, the same information is simply returned in 
 | status | Should be "ok" |
 | id | User ID for the new user |
 | token | Spotify token |
+
+**Example response:**
+```json
+{
+    "status": "ok",
+    "id": "c28a0a56-fe90-4341-a6f0-fd7e5da84444",
+    "token": "123456789ABCDEF"
+}
+```
 
 ## 1.4. Retrieve user information
 Requests to `/userinfo` with an HTTP GET parameter named `id` will return the following generic information about a user.
@@ -86,6 +116,45 @@ Elements of `top_artists` are defined as follows.
 | genre | Array of strings containing the genres this artist plays; may not be available |
 | image | URL to an avatar for this artist; may not be available |
 
+**Example response:**
+```json
+{
+    "status": "ok",
+    "id": "c28a0a56-fe90-4341-a6f0-fd7e5da84444",
+    "name": "John",
+    "dob": "1999-08-24",
+    "gender": 0,
+    "bio": "I like jazz and psychedelic rock.",
+    "image": "https://cdn.something.com/images/12345678.jpg",
+    "top_tracks": [
+        {
+            "name": "Welcome to the Machine",
+            "artist": "Pink Floyd"
+        },
+        {
+            "name": "Plainsong",
+            "artist": "The Cure"
+        }
+    ],
+    "top_artists": [
+        {
+            "name": "Pink Floyd",
+            "genre": [
+                "rock", "psychedelic rock", "progressive rock"
+            ],
+            "image": "https://cdn.something.com/images/123.jpg"
+        },
+        {
+            "name": "The Cure",
+            "genre": [
+                "rock", "alternative rock"
+            ]
+        }
+    ],
+    "last_online": "2024-03-16 12:34:56"
+}
+```
+
 ## 1.5. Request data update
 To request updating the user's music information from Spotify, the client requests `/update` via HTTP POST request. The data passed in this request are `id` of the user and `token` containing the Spotify token. Ideally, the client calls this function upon every startup or on every interval.
 
@@ -97,6 +166,14 @@ The returned object informs the client whether the update happened.
 | ----- | ----------- |
 | status | Should be "ok" |
 | updated | Boolean value if the update happened |
+
+**Example response:**
+```json
+{
+    "status": "ok",
+    "updated": false
+}
+```
 
 ## 1.6. Retrieve suggested matches
 To search for people that the user can "swipe" on, the frontend requests `/recs` for recommendations. Requests are sent via HTTP GET and the parameter `id` of the current user is passed.
@@ -119,6 +196,44 @@ Each `person` object is defined as follows.
 
 The elements of `artists` and `tracks` are defined in the same way as is defined under `/userinfo`.
 
+**Example response:**
+```json
+{
+    "status": "ok",
+    "people": [
+        {
+            "id": "c28a0a56-fe90-4341-a6f0-fd7e5da84444",
+            "score": 0.47,
+            "artists": [
+                {
+                    "name": "Pink Floyd",
+                    "genre": [
+                        "rock", "psychedelic rock", "progressive rock"
+                    ],
+                    "image": "https://cdn.something.com/images/123.jpg"
+                },
+                {
+                    "name": "The Cure",
+                    "genre": [
+                        "rock", "alternative rock"
+                    ]
+                }
+            ],
+            "tracks": [
+                {
+                    "name": "Welcome to the Machine",
+                    "artist": "Pink Floyd"
+                },
+                {
+                    "name": "Plainsong",
+                    "artist": "The Cure"
+                }
+            ]
+        }
+    ]
+}
+```
+
 ## 1.7. Like/dislike someone
 This function is valid for the IDs returned by `/recs` to like or dislike them. Requests are sent via HTTP POST and take 3 parameters.
 
@@ -135,6 +250,14 @@ The returned object indicates whether or not this action resulted in an immediat
 | status | Should be "ok" |
 | matched | Boolean value |
 
+**Example response:**
+```json
+{
+    "status": "ok",
+    "matched": true
+}
+```
+
 ## 1.8. Retrieve match list
 The client retrieves a list of matches by requesting `/matches` via HTTP GET. One GET parameter is passed, `id` which contains the ID of the current user. The returned object is defined as follows.
 
@@ -144,6 +267,44 @@ The client retrieves a list of matches by requesting `/matches` via HTTP GET. On
 | people | Array of `person` objects, in descending order of most recently matched |
 
 Each `person` object is defined in the same format as is defined under `/recs`, and thus includes a music taste similarity score, as well as an array of up to 10 top tracks and artists shared between the matches.
+
+**Example response:**
+```json
+{
+    "status": "ok",
+    "people": [
+        {
+            "id": "c28a0a56-fe90-4341-a6f0-fd7e5da84444",
+            "score": 0.47,
+            "artists": [
+                {
+                    "name": "Pink Floyd",
+                    "genre": [
+                        "rock", "psychedelic rock", "progressive rock"
+                    ],
+                    "image": "https://cdn.something.com/images/123.jpg"
+                },
+                {
+                    "name": "The Cure",
+                    "genre": [
+                        "rock", "alternative rock"
+                    ]
+                }
+            ],
+            "tracks": [
+                {
+                    "name": "Welcome to the Machine",
+                    "artist": "Pink Floyd"
+                },
+                {
+                    "name": "Plainsong",
+                    "artist": "The Cure"
+                }
+            ]
+        }
+    ]
+}
+```
 
 ## 1.9. Send message
 TODO
