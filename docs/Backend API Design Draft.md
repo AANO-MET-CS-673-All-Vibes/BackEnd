@@ -3,7 +3,9 @@ This document is to assist with my own design of the backend portion for the pro
 
 The main point of this design concept is to reduce the number of redirects within the backend to as little as possible, making frontend development smoother and more responsive with ultimately a lower number of pages.
 
-## Log in
+# 1. List of API functions
+
+## 1.1 Log in
 We depend on Spotify authentication to log in.
 
 To cope with CORS restrictions, there are two login functions: `/login` and `/weblogin`. The difference is that `/login` is REST-compliant while `/weblogin` performs redirects and does not directly return JSON.
@@ -15,7 +17,7 @@ In the case of `/login`, the returned JSON object is:
 | status | Should always be "ok" |
 | auth_url | Spotify's API URL to redirect to for authentication |
 
-## Post-authentication
+## 1.2. Post-authentication
 
 After both successful and unsuccessful authentication, Spotify will redirect to `/callback` on either the API server or the frontend server, depending on whether `/login` or `/weblogin` was used respectively. In the case of an API call to `/callback`, the expected parameter is `code` passed via HTTP GET. Spotify provides this code and requires no additional action from the frontend developers. 
 
@@ -31,7 +33,7 @@ After both successful and unsuccessful authentication, Spotify will redirect to 
 
 The frontend can then depend on the `exists` field to decide whether to take the user to home screen or the signup screen.
 
-## Account creation
+## 1.3. Account creation
 Accounts are created via HTTP POST request to `/create` or `/websignup` for mobile and web clients, respectively, again to cope with CORS restrictions much like authentication.
 
 The minimum information required to create an account are email, name, gender, and date of birth. Gender is stored as an integer, where 0 is male, 1 is female, and any other value is other. This is all sent via HTTP POST along with the request.
@@ -53,7 +55,7 @@ As for the REST-compliant `/create`, the same information is simply returned in 
 | id | User ID for the new user |
 | token | Spotify token |
 
-## Retrieve user information
+## 1.4. Retrieve user information
 Requests to `/userinfo` with an HTTP GET parameter named `id` will return the following generic information about a user.
 
 | Field | Description |
@@ -84,7 +86,7 @@ Elements of `top_artists` are defined as follows.
 | genre | Array of strings containing the genres this artist plays; may not be available |
 | image | URL to an avatar for this artist; may not be available |
 
-## Request data update
+## 1.5. Request data update
 To request updating the user's music information from Spotify, the client requests `/update` via HTTP POST request. The data passed in this request are `id` of the user and `token` containing the Spotify token. Ideally, the client calls this function upon every startup or on every interval.
 
 Note that this simply requests an update, and does not mean that the update *will* happen. The database maintains the time and date of the most recent update, and updates are not undertaken until a certain threshold (3 days at the time of writing this) has passed. This is to avoid spamming Spotify's API as well as the fact that the data averaged out over the past month or six months is unlikely to change in a timeframe lower than the set threshold, saving internet traffic as well.
@@ -96,7 +98,7 @@ The returned object informs the client whether the update happened.
 | status | Should be "ok" |
 | updated | Boolean value if the update happened |
 
-## Retrieve suggested matches
+## 1.6. Retrieve suggested matches
 To search for people that the user can "swipe" on, the frontend requests `/recs` for recommendations. Requests are sent via HTTP GET and the parameter `id` of the current user is passed.
 
 The returned object includes a list of people that the user can swipe on, up to 10 top tracks and/or artists shared between the users if available, and a music taste similarity score for each person. The similarity score ranges from 0 to 1, where 0 indicates nothing in common and 1 indicates virtually identical music taste. I recommend the frontend treat values higher than 0.3 as chances for a "good" match for marketing purposes.
@@ -117,7 +119,7 @@ Each `person` object is defined as follows.
 
 The elements of `artists` and `tracks` are defined in the same way as is defined under `/userinfo`.
 
-## Like/dislike someone
+## 1.7. Like/dislike someone
 This function is valid for the IDs returned by `/recs` to like or dislike them. Requests are sent via HTTP POST and take 3 parameters.
 
 | Parameter | Description |
@@ -133,7 +135,7 @@ The returned object indicates whether or not this action resulted in an immediat
 | status | Should be "ok" |
 | matched | Boolean value |
 
-## Retrieve match list
+## 1.8. Retrieve match list
 The client retrieves a list of matches by requesting `/matches` via HTTP GET. One GET parameter is passed, `id` which contains the ID of the current user. The returned object is defined as follows.
 
 | Field | Description |
@@ -143,14 +145,14 @@ The client retrieves a list of matches by requesting `/matches` via HTTP GET. On
 
 Each `person` object is defined in the same format as is defined under `/recs`, and thus includes a music taste similarity score, as well as an array of up to 10 top tracks and artists shared between the matches.
 
-## Send/receive messages
+## 1.9. Send message
 TODO
 
-## Retrieve message history
+## 1.10. Receive/check for message
 TODO
 
-## Match profile retrieval
-TODO: retrieve info about someone we alr matched with
+## 1.11. Retrieve message history
+TODO
 
 ## Unmatch
 TODO
