@@ -99,7 +99,7 @@ Requests to `/userinfo` with an HTTP GET parameter named `id` will return the fo
 | image | URL to the user's avatar |
 | top_tracks | Array of the user's top 10 tracks over the past few months |
 | top_artists | Array of the user's top 10 artists over the past few months |
-| last_online | Date/time the user was last online |
+| last_online | Date/time the user was last online in `YYYY-MM-DD HH:MM:SS` format |
 
 Elements of `top_tracks` are defined as follows.
 
