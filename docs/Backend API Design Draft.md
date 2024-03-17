@@ -34,7 +34,7 @@ The frontend can then depend on the `exists` field to decide whether to take the
 ## Account creation
 Accounts are created via HTTP POST request to `/create` or `/websignup` for mobile and web clients, respectively, again to cope with CORS restrictions much like authentication.
 
-The minimum information required to create an account are email, name, gender, and date of birth. Gender is stored as an integer, where 0 is male, 1 is female, and any other value is other. Upon successful account creation, the following JSON object is returned.
+The minimum information required to create an account are email, name, gender, and date of birth. Gender is stored as an integer, where 0 is male, 1 is female, and any other value is other. This is all sent via HTTP POST along with the request.
 
 Upon successful account creation, the web-oriented `/websignup` will redirect to `/home` on the client server via HTTP GET with two parameters: `id` and `token`. The client can then store these in cookies to maintain sessions later and to allow access to the remaining functions.
 
