@@ -47,6 +47,7 @@ def is_available(id1, id2):
 
 def attempt():
     response = {}
+    response["status"] = "ok"
 
     me = user.get_internal_id(request.form["me"])
     other = request.form["other"]
@@ -77,8 +78,11 @@ def attempt():
             cursor.close()
             response["status"] = "fail"
             return api.response(json.dumps(response))
+        else:
+            response["matched"] = like
     else:
         # ok not a match, but rather a first move - this may be a like or a dislike
+        response["matched"] = False
         if like:
             count = cursor.execute("INSERT INTO matches (id1, id2, matched, unmatched, attempt_time) VALUES ('" + me + "', '" + other + "', false, false, '" + date_string + "')")
         else:
@@ -91,7 +95,6 @@ def attempt():
 
     cursor.close()
     db.commit()
-    response["status"] = "ok"
     return api.response(json.dumps(response))
 
 # matches(): returns a list of this user's matches
