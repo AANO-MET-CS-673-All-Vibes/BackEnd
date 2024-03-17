@@ -11,7 +11,7 @@ db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="All
 
 def is_match(id1, id2):
     cursor = db.cursor()
-    count = cursor.execute("SELECT * FROM matches WHERE (matched=true AND (id1='" + id1 + "' and id2='" + id2 + "') OR (id1='" + id2 + "' and id2='" + id1 + "'))")
+    count = cursor.execute("SELECT * FROM matches WHERE (matched=true AND ((id1='" + id1 + "' and id2='" + id2 + "') OR (id1='" + id2 + "' and id2='" + id1 + "')))")
     cursor.close()
 
     return count != 0
@@ -39,7 +39,7 @@ def is_available(id1, id2):
     cursor.close()
     if count != 0:
         return False
-    
+
     return True
 
 # attempt(): attempts to match with a user
@@ -53,10 +53,10 @@ def attempt():
     like_post = request.form["like"]
 
     # 0 = dislike, 1 or anything else = like
-    if int(like_post) >= 1:
-        like = 1    # but keep the database clean
-    else:
-        like = 0
+    like = (int(like_post) >= 1)
+
+    now = datetime.now()
+    date_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
     # first check if the other user has already swiped; this means checking if ID1 == other and ID2 == me
     # if not, then we will insert our own new row
@@ -65,9 +65,10 @@ def attempt():
 
     if count != 0:
         # here we have potential to make a match!
-        if like == 1:
+        if like:
             # match!
-            count = cursor.execute("UPDATE matches SET matched=true WHERE (id1='" + other + "' AND id2='" + me + "')")
+            # come up with match time
+            count = cursor.execute("UPDATE matches SET matched=true,match_time='" + date_string + "' WHERE (id1='" + other + "' AND id2='" + me + "')")
         else:
             # not a match :(
             count = cursor.execute("UPDATE matches SET matched=true,unmatched=true WHERE (id1='" + other + "' AND id2='" + me + "')")
@@ -77,10 +78,12 @@ def attempt():
             response["status"] = "fail"
             return api.response(json.dumps(response))
     else:
-        # ok not a match, but rather a first move
-        now = datetime.now()
-        date_string = now.strftime("%Y-%m-%d %H:%M:%S")
-        count = cursor.execute("INSERT INTO matches (id1, id2, matched, unmatched, attempt_time) VALUES ('" + me + "', '" + other + "', false, false, '" + date_string + "')")
+        # ok not a match, but rather a first move - this may be a like or a dislike
+        if like:
+            count = cursor.execute("INSERT INTO matches (id1, id2, matched, unmatched, attempt_time) VALUES ('" + me + "', '" + other + "', false, false, '" + date_string + "')")
+        else:
+            count = cursor.execute("INSERT INTO matches (id1, id2, matched, unmatched, attempt_time) VALUES ('" + me + "', '" + other + "', false, true, '" + date_string + "')")
+        
         if count != 1:
             cursor.close()
             response["status"] = "fail"
