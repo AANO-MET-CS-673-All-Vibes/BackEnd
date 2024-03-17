@@ -110,8 +110,20 @@ Each `person` object is defined as follows.
 
 The elements of `artists` and `tracks` are defined in the same way as is defined under `/userinfo`.
 
-## Match attempt
-TODO: send a match attempt and then either match or not
+## Like/dislike someone
+This function is valid for the IDs returned by `/recs` to like or dislike them. Requests are sent via HTTP POST and take 3 parameters.
+
+| Parameter | Description |
+| --------- | ----------- |
+| me | ID of the current user |
+| other | ID of the user being judged, as returned by `/recs` |
+| like | 0 = dislike, 1 = like |
+
+The returned object indicates whether or not this action resulted in an immediate match. If this action did not result in an immediate match, the client uses `/matches` instead to scan an entire list of matches.
+
+| Field | Description |
+| status | Should be "ok" |
+| matched | Boolean value |
 
 ## Match list retrieval
 TODO
