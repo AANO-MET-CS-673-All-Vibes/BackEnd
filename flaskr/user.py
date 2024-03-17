@@ -70,8 +70,9 @@ def update():
     raw_top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range="short_term")
     raw_top_artists = sp.current_user_top_artists(limit=25, offset=0, time_range="short_term")
 
-    # and if that's not enough, then try to the past 6 months
-    if len(raw_top_tracks) < 50 or len(raw_top_artists) < 50:
+    # and if that's not enough, then try to use the past 6 months
+    if len(raw_top_tracks["items"]) < 50 or len(raw_top_artists["items"]) < 25:
+        #print("using medium-term, " + str(len(raw_top_tracks)) + ", " + str(len(raw_top_artists)))
         raw_top_tracks = sp.current_user_top_tracks(limit=50, offset=0, time_range="medium_term")
         raw_top_artists = sp.current_user_top_artists(limit=25, offset=0, time_range="medium_term")
 
@@ -98,10 +99,9 @@ def update():
     tracks_json = json.dumps(top_tracks).replace("'", "\\'").replace("\\\"", "")
     artists_json = json.dumps(top_artists).replace("'", "\\'").replace("\\\"", "")
 
-    print(tracks_json)
+    #print(tracks_json)
 
     # and update the database
-    print(tracks_json)
     cursor.execute("UPDATE users SET top_tracks='" + tracks_json + "' WHERE id='" + request.form["id"] + "'")
     cursor.execute("UPDATE users SET top_artists='" + artists_json + "' WHERE id='" + request.form["id"] + "'")
 
