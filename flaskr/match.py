@@ -33,3 +33,12 @@ def is_available(id1, id2):
     cursor.close()
 
     return count <= 1
+
+# attempt(): attempts to match with a user
+# Parameters: HTTP POST - "me" (ID), "other" (ID), and "like" (0 = dislike, 1 = like)
+
+def attempt():
+    response = {}
+
+    response["status"] = "ok"
+    return api.response(json.dumps(response))

@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from flaskr import login, account, user, recs
+from flaskr import login, account, user, recs, match
 
 def create_app(test_config=None):
     # create and configure the app
@@ -48,6 +48,10 @@ def create_app(test_config=None):
     @app.route("/recs")
     def route_recs():
         return recs.recs()
+    
+    @app.route("/attempt", methods=["POST"])
+    def route_attempt():
+        return match.attempt()
 
     return app
 
