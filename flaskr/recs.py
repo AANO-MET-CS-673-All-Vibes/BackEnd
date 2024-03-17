@@ -81,8 +81,7 @@ def recs():
             person["score"] = score[0]
             person["artists"] = score[1]
             person["tracks"] = score[2]
-
-        people.append(person)
+            people.append(person)
 
     cursor.close()
     response["status"] = "ok"

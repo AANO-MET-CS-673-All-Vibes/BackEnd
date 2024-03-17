@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, request
 from datetime import datetime
 import pymysql, spotipy, json
-from flaskr import api, user
+from flaskr import api, user, recs
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
 
@@ -21,18 +21,26 @@ def is_match(id1, id2):
 # Returns: Boolean
 
 def is_available(id1, id2):
+    # obviously unavailable if we already matched
+    if is_match(id1, id2):
+        return False
+
     cursor = db.cursor()
 
-    # IMPORTANT: in this query, we're swapping id1 and id2 for a reason, do NOT touch this
-    # the reasoning behind this is that we (id1) are the user looking for potential matches; so
-    # this only counts if a possible other user (id2) swapped right on us
-    # of course if the count returns zero then the user is automatically available to us
-    #
-    # tldr we're checking if ID2 is available to us, from the perspective of ID1
-    count = cursor.execute("SELECT * FROM matches WHERE (matched=false AND unmatched=false AND id1='" + id2 + "' and id2='" + id1 + "')")
+    # did we already swipe on this user?
+    count = cursor.execute("SELECT * FROM matches WHERE (id1='" + id1 + "' AND id2='" + id2 + "')")
+    if count != 0:
+        cursor.close()
+        return False
+    
+    # has the other user swiped on us and possibly unmatched?
+    # note the intentional ID swap
+    count = cursor.execute("SELECT * FROM matches WHERE (unmatched=true) AND (id1='" + id2 + "' AND id2='" + id1 + "')")
     cursor.close()
-
-    return count <= 1
+    if count != 0:
+        return False
+    
+    return True
 
 # attempt(): attempts to match with a user
 # Parameters: HTTP POST - "me" (ID), "other" (ID), and "like" (0 = dislike, 1 = like)
@@ -40,6 +48,46 @@ def is_available(id1, id2):
 def attempt():
     response = {}
 
+    me = user.get_internal_id(request.form["me"])
+    other = request.form["other"]
+    like_post = request.form["like"]
+
+    # 0 = dislike, 1 or anything else = like
+    if int(like_post) >= 1:
+        like = 1    # but keep the database clean
+    else:
+        like = 0
+
+    # first check if the other user has already swiped; this means checking if ID1 == other and ID2 == me
+    # if not, then we will insert our own new row
+    cursor = db.cursor()
+    count = cursor.execute("SELECT * FROM matches WHERE (matched=false AND unmatched=false) AND (id1='" + other + "' AND id2='" + me + "')")
+
+    if count != 0:
+        # here we have potential to make a match!
+        if like == 1:
+            # match!
+            count = cursor.execute("UPDATE matches SET matched=true WHERE (id1='" + other + "' AND id2='" + me + "')")
+        else:
+            # not a match :(
+            count = cursor.execute("UPDATE matches SET matched=true,unmatched=true WHERE (id1='" + other + "' AND id2='" + me + "')")
+
+        if count != 1:
+            cursor.close()
+            response["status"] = "fail"
+            return api.response(json.dumps(response))
+    else:
+        # ok not a match, but rather a first move
+        now = datetime.now()
+        date_string = now.strftime("%Y-%m-%d %H:%M:%S")
+        count = cursor.execute("INSERT INTO matches (id1, id2, matched, unmatched, attempt_time) VALUES ('" + me + "', '" + other + "', false, false, '" + date_string + "')")
+        if count != 1:
+            cursor.close()
+            response["status"] = "fail"
+            return api.response(json.dumps(response))
+
+    cursor.close()
+    db.commit()
     response["status"] = "ok"
     return api.response(json.dumps(response))
 
@@ -70,7 +118,7 @@ def matches():
         me = user.get_profile(id)
         other = user.get_profile(person["id"])
 
-        score = similarity(me, other)
+        score = recs.similarity(me, other)
         person["score"] = score[0]
         person["artists"] = score[1]
         person["tracks"] = score[2]
