@@ -75,7 +75,7 @@ def recs():
     for i in range(count):
         person = {}
         row = cursor.fetchone()
-        if match.is_match(id, row[1]) == False:
+        if match.is_available(id, row[1]):
             person["id"] = row[1]
             score = similarity(user_profile, row)
             person["score"] = score[0]
