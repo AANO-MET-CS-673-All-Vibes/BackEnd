@@ -23,7 +23,7 @@ In the case of `/login`, the returned JSON object is:
 ```json
 {
     "status": "ok",
-    "auth_url": "https://accounts.spotify.com/authorize?client_id=12345&response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%3A5000%2Fcallback&scope=user-read-email+user-read-private+user-top-read"
+    "auth_url": "https://accounts.spotify.com/authorize"
 }
 ```
 
