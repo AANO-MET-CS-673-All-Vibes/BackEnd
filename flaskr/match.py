@@ -11,7 +11,18 @@ db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="All
 
 def is_match(id1, id2):
     cursor = db.cursor()
-    count = cursor.execute("SELECT * FROM matches WHERE (matched=true AND ((id1='" + id1 + "' and id2='" + id2 + "') OR (id1='" + id2 + "' and id2='" + id1 + "')))")
+    count = cursor.execute("SELECT * FROM matches WHERE (matched=true AND unmatched=false AND ((id1='" + id1 + "' and id2='" + id2 + "') OR (id1='" + id2 + "' and id2='" + id1 + "')))")
+    cursor.close()
+
+    return count != 0
+
+# is_unmatch(): checks if two given IDs unmatched
+# Parameters: both INTERNAL IDs
+# Returns: boolean
+
+def is_unmatch(id1, id2):
+    cursor = db.cursor()
+    count = cursor.execute("SELECT * FROM matches WHERE (matched=true AND unmatched=true AND ((id1='" + id1 + "' and id2='" + id2 + "') OR (id1='" + id2 + "' and id2='" + id1 + "')))")
     cursor.close()
 
     return count != 0
@@ -22,7 +33,7 @@ def is_match(id1, id2):
 
 def is_available(id1, id2):
     # obviously unavailable if we already matched
-    if is_match(id1, id2):
+    if is_match(id1, id2) or is_unmatch(id1, id2):
         return False
 
     cursor = db.cursor()
