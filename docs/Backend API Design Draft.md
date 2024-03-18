@@ -1,16 +1,18 @@
-# allvibes backend plan
-This document is to assist with my own design of the backend portion for the project. I'm planning a backend that is fundamentally nothing more than an REST-compliant API that exposes the functionality we'll provide. This will allow for extra flexibility in the frontend, as well as (potentially in the future) making it easier to separate the web client from the mobile client.
+# allvibes API
+This draft outlines the design of the allvibes backend and how its subsequent REST API. In brief, the server maintains no concept of "sessions"; sessions must be maintained entirely on the client side. Each piece of functionality making up the entire app is exposed as REST APIs, most of which are called via HTTP GET requests with several exceptions using HTTP POST. No function in this list depends on state or any previous functions. State is maintained entirely on the client side.
 
-The main point of this design concept is to reduce the number of redirects within the backend to as little as possible, making frontend development smoother and more responsive with ultimately a lower number of pages.
+The main point of this concept, aside from complying with REST design principles, is to reduce the number of redirects within the backend to as little as possible, being zero for nearly all the functions, enabling smoother frontend development and higher responsiveness with ultimately a lower number of pages.
 
-For the HTTP GET requests, parameters are specified as GET parameters, that is in the URL itself. As for HTTP POST requests, the expected `Content-Type` is `application/x-www-form-urlencoded`, meaning that the parameters are sent the same manner as a submitted form. 
+For the HTTP GET requests, parameters are specified as GET parameters, that is in the URL itself. As for HTTP POST requests, the expected `Content-Type` is `application/x-www-form-urlencoded`, meaning that the parameters are sent the same text-based manner as a submitted form, unless explicitly stated otherwise in the function's description.
+
+The full behavior of each function is outlined in this document.
 
 # 1. List of API functions
 
-## 1.1 Log in
+## 1.1. Log in
 We depend on Spotify authentication to log in.
 
-To cope with CORS restrictions, there are two login functions: `/login` and `/weblogin`. The difference is that `/login` is REST-compliant while `/weblogin` performs redirects and does not directly return JSON.
+To cope with CORS restrictions, there are two login functions: `/login` and `/weblogin`. The difference is that `/login` is REST-compliant while `/weblogin` performs redirects and does not directly return JSON. Both these functions are called via HTTP GET and take no parameters.
 
 In the case of `/login`, the returned JSON object is:
 
@@ -29,7 +31,11 @@ In the case of `/login`, the returned JSON object is:
 
 ## 1.2. Post-authentication
 
-After both successful and unsuccessful authentication, Spotify will redirect to `/callback` on either the API server or the frontend server, depending on whether `/login` or `/weblogin` was used respectively. In the case of an API call to `/callback`, the expected parameter is `code` passed via HTTP GET. Spotify provides this code and requires no additional action from the frontend developers. 
+After both successful and unsuccessful authentication, Spotify will redirect to `/callback` on either the API server or the frontend server, depending on whether `/login` or `/weblogin` was used respectively. In the case of an API call to `/callback`, the expected parameter is `code` passed via HTTP GET. Spotify provides this code and requires no additional action from the frontend developers.
+
+| Parameter | Description |
+| --------- | ----------- |
+| code | Temporary code from Spotify's authentication; used to generate a token |
 
 `/callback` with the appropriate parameter will return the following JSON object.
 
@@ -41,7 +47,7 @@ After both successful and unsuccessful authentication, Spotify will redirect to 
 | exists | Boolean if this account already exists |
 | id | UUID of this user; only valid if `exists==true` |
 
-The frontend can then depend on the `exists` field to decide whether to take the user to home screen or the signup screen.
+The client can then depend on the `exists` field to decide whether to take the user to home screen or the signup screen.
 
 **Example response:**
 ```json
@@ -158,6 +164,11 @@ Elements of `top_artists` are defined as follows.
 ## 1.5. Request data update
 To request updating the user's music information from Spotify, the client requests `/update` via HTTP POST request. The data passed in this request are `id` of the user and `token` containing the Spotify token. Ideally, the client calls this function upon every startup or on every interval.
 
+| Parameter | Description |
+| --------- | ----------- |
+| id | User ID of the current user |
+| token | Spotify token |
+
 Note that this simply requests an update, and does not mean that the update *will* happen. The database maintains the time and date of the most recent update, and updates are not undertaken until a certain threshold (3 days at the time of writing this) has passed. This is to avoid spamming Spotify's API as well as the fact that the data averaged out over the past month or six months is unlikely to change in a timeframe lower than the set threshold, saving internet traffic as well.
 
 The returned object informs the client whether the update happened.
@@ -178,7 +189,9 @@ The returned object informs the client whether the update happened.
 ## 1.6. Retrieve suggested matches
 To search for people that the user can "swipe" on, the frontend requests `/recs` for recommendations. Requests are sent via HTTP GET and the parameter `id` of the current user is passed.
 
-The returned object includes a list of people that the user can swipe on, up to 10 top tracks and/or artists shared between the users if available, and a music taste similarity score for each person. The similarity score ranges from 0 to 1, where 0 indicates nothing in common and 1 indicates virtually identical music taste. I recommend the frontend treat values higher than 0.3 as chances for a "good" match for marketing purposes.
+The returned object includes a list of people that the user can swipe on, up to 10 top tracks and/or artists shared between the users if available, and a music taste similarity score for each person.
+
+The similarity score ranges from 0 to 1, where 0 indicates nothing in common and 1 indicates virtually identical music taste. It is recommended to interpret values higher than 0.3 as chances for a "good" match for marketing purposes, encouraging the user to "like" this person.
 
 | Field | Description |
 | ----- | ----------- |
