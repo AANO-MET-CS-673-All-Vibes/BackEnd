@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from flaskr import login, account, user, recs, match
+from flaskr import login, account, user, recs, match, message
 
 def create_app(test_config=None):
     # create and configure the app
@@ -56,6 +56,18 @@ def create_app(test_config=None):
     @app.route("/matches")
     def route_matches():
         return match.matches()
+    
+    @app.route("/send", methods=["POST"])
+    def route_send():
+        return message.send()
+    
+    @app.route("/receive")
+    def route_receive():
+        return message.receive()
+    
+    @app.route("/msghistory")
+    def route_history():
+        return message.history()
 
     return app
 
