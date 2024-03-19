@@ -32,11 +32,11 @@ CREATE TABLE IF NOT EXISTS `matches` (
 );
 
 CREATE TABLE IF NOT EXISTS `messages` (
-	`from` varchar(36) NOT NULL,
-	`to` varchar(36) NOT NULL,
-	`read` tinyint(1),
+	`sender` varchar(36) NOT NULL,
+	`recipient` varchar(36) NOT NULL,
+	`seen` tinyint(1),
 	`sent_time` timestamp,
-	`read_time` timestamp,
+	`seen_time` timestamp,
 	`text` varchar(500),
 	`attachment` varchar(500)
 );
