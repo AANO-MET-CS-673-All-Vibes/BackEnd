@@ -20,7 +20,6 @@ def login():
     output = {}
     output["status"] = "ok"
     output["auth_url"] = auth_url
-    output["ip"] = api.get_remote_ip()
     return api.response(json.dumps(output))
 
 def weblogin():
