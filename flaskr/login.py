@@ -11,25 +11,26 @@ SPOTIFY_REDIRECT_WEB_URI = "http://127.0.0.1:8080/callback"
 #SCOPE = 'user-library-read'  # TODO: For example scope i am asking to get the library of the user you can change it as you want NOUR.
 SCOPE = "user-top-read,user-read-email,user-read-private"     # i figured medium-term top songs are a better way to judge rather than liked songs that can accumulate songs from years ago you no longer like (?)
 
-token_cache = spotipy.cache_handler.MemoryCacheHandler()
+token_cache = None
 
 def login():
-    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI, scope=SCOPE, cache_handler=token_cache)
+    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI, scope=SCOPE, cache_handler=token_cache, username=api.get_remote_ip())
     auth_url = sp_oauth.get_authorize_url()
     
     output = {}
     output["status"] = "ok"
     output["auth_url"] = auth_url
+    output["ip"] = api.get_remote_ip()
     return api.response(json.dumps(output))
 
 def weblogin():
-    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_WEB_URI, scope=SCOPE, cache_handler=token_cache)
+    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_WEB_URI, scope=SCOPE, cache_handler=token_cache, username=api.get_remote_ip())
     auth_url = sp_oauth.get_authorize_url()
     
     return redirect(auth_url)
 
 def callback():
-    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_WEB_URI, scope=SCOPE, cache_handler=token_cache)
+    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_WEB_URI, scope=SCOPE, cache_handler=token_cache, username=api.get_remote_ip())
 
     code = request.args.get("code")
 
@@ -62,7 +63,7 @@ def callback():
     return api.response(json.dumps(output))
 
 def token_from_code(code):
-    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI, scope=SCOPE, cache_handler=token_cache)
+    sp_oauth = SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI, scope=SCOPE, cache_handler=token_cache, username=api.get_remote_ip())
 
     token_info = sp_oauth.get_access_token(code)
     token = token_info["access_token"]
