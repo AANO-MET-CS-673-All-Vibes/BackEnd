@@ -322,22 +322,40 @@ Each `person` object is defined in the same format as is defined under `/recs`, 
 ```
 
 ## 1.9. Send message
-TODO
+To send a message to a match, the client requests `/send` via HTTP POST. The parameters are defined as follows.
 
-## 1.10. Receive/check for message
+| Parameter | Description |
+| --------- | ----------- |
+| from | User ID of the sender |
+| to | User ID of the recipient |
+| text | The text to be sent |
+| attachment | URLs to any media attachment |
+
+The `attachment` field may be empty. In the case of multiple attachments, each URL is separated from the next by a semicolon.
+
+The response only informs the client whether or not the message was sent.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" |
+
+## 1.10. Receive new messages
 TODO
 
 ## 1.11. Retrieve message history
 TODO
 
-## Unmatch
+## 1.12. Upload media attachment
 TODO
 
-## Block/report match
+## 1.13. Unmatch
 TODO
 
-## Profile updates
+## 1.14. Block/report match
+TODO
+
+## 1.15. Profile updates
 TODO: this should probably be very similar to account creation; it's nothing more than updating the user's info in the main table
 
-## Event notifications
+## 1.16. Event notifications
 TODO
