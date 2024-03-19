@@ -1,9 +1,11 @@
 # allvibes API
-This draft outlines the design of the allvibes backend and how its subsequent REST API. In brief, the server maintains no concept of "sessions"; sessions must be maintained entirely on the client side. Each piece of functionality making up the entire app is exposed as REST APIs, most of which are called via HTTP GET requests with several exceptions using HTTP POST. No function in this list depends on state or any previous functions. State is maintained entirely on the client side.
+This draft outlines the design of the allvibes backend and its subsequent REST API. In brief, the server maintains no concept of "sessions"; sessions must be maintained entirely on the client side. Each piece of functionality making up the entire app is exposed as REST APIs, most of which are called via HTTP GET requests with several exceptions using HTTP POST. No function in this list depends on state or any previous functions. State is maintained entirely on the client side.
 
 The main point of this concept, aside from complying with REST design principles, is to reduce the number of redirects within the backend to as little as possible, being zero for nearly all the functions, enabling smoother frontend development and higher responsiveness with ultimately a lower number of pages.
 
 For the HTTP GET requests, parameters are specified as GET parameters, that is in the URL itself. As for HTTP POST requests, the expected `Content-Type` is `application/x-www-form-urlencoded`, meaning that the parameters are sent the same text-based manner as a submitted form, unless explicitly stated otherwise in the function's description.
+
+Responses from the server to the client are always in JSON format, with the `Content-Type` being set to `application/json`. There are no exceptions to this.
 
 The full behavior of each function is outlined in this document.
 
