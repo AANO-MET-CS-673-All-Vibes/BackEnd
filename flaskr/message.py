@@ -40,10 +40,36 @@ def send():
 # receive(): receives UNREAD messages
 
 def receive():
-    # PLACEHOLDER
-    response = {}
-    response["status"] = "ok"
+    sender = request.args.get("from")
+    recipient = user.get_internal_id(request.args.get("id"))
 
+    response = {}
+    if match.is_match(sender, recipient) is False:
+        response["status"] = "fail - attempt to receive messages from non-match"
+        return api.response(json.dumps(response))
+
+    # pull from the database
+    cursor = db.cursor()
+    count = cursor.execute("SELECT * FROM messages WHERE (sender='" + sender + "' AND recipient='" + recipient + "' AND seen=false) ORDER BY sent_time DESC")
+    
+    messages = []
+
+    for i in range(count):
+        message = {}
+        row = cursor.fetchone()
+
+        message["sender"] = sender
+        message["recipient"] = request.args.get("id")
+        message["message_id"] = "0"     # TODO!!!
+        message["timestamp"] = str(row[3])
+        message["text"] = row[5]
+        message["attachment"] = row[6]
+
+        messages.append(message)
+    
+    cursor.close()
+    response["status"] = "ok"
+    response["messages"] = messages
     return api.response(json.dumps(response))
 
 # history(): retrieves message hisotory
