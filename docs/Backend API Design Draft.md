@@ -326,7 +326,7 @@ To send a message to a match, the client requests `/send` via HTTP POST. The par
 
 | Parameter | Description |
 | --------- | ----------- |
-| from | User ID of the sender |
+| from | User ID of the current user, i.e. the sender |
 | to | User ID of the recipient |
 | text | The text to be sent |
 | attachment | URLs to any media attachment |
@@ -340,7 +340,41 @@ The response only informs the client whether or not the message was sent.
 | status | Should be "ok" |
 
 ## 1.10. Receive new messages
-TODO
+The endpoint `/receive` is used to receive unread messages from a match. The client requests it via HTTP GET and passes two parameters. Note that this function does **not** mark messages as seen, allowing this to be used in notification systems. Instead, messages are automatically marked as seen by requesting the `/history` endpoint instead.
+
+| Parameter | Description |
+| --------- | ----------- |
+| id | User ID of the current user, i.e. the recipient |
+| from | User ID of the sender |
+
+Upon success, the following object is returned.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" |
+| messages | An array of `message` objects; may be empty in the case of no unread messages from this user |
+
+Each `message` object in the aforementioned array contains a single received message. The array is arranged from most recent to least recent.
+
+| Field | Description |
+| from | User ID of the sender |
+| to | User ID of the recipient |
+| id | Unique ID of this message; will someday be used to report abusive behavior, etc. |
+| timestamp | Date/time this message was sent in `YYYY-MM-DD HH:MM:SS` format |
+| text | Text content of the message; may be empty in case of attachment-only messages |
+| attachment | URLs to attachments in this message |
+
+Much like in `/send`, `attachment` may be empty in the case of no attachments. In the case of multiple attachments, each two URLs are separated by a semicolon.
+
+**Example response:**
+```json
+{
+    "status": "ok",
+    "messages": [
+        /* TODO */
+    ]
+}
+```
 
 ## 1.11. Retrieve message history
 TODO
