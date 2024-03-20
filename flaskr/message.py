@@ -58,8 +58,8 @@ def receive():
         message = {}
         row = cursor.fetchone()
 
-        message["sender"] = sender
-        message["recipient"] = request.args.get("id")
+        message["from"] = sender
+        message["to"] = request.args.get("id")
         message["message_id"] = "0"     # TODO!!!
         message["timestamp"] = str(row[3])
         message["text"] = row[5]
