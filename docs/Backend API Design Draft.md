@@ -357,6 +357,7 @@ Upon success, the following object is returned.
 Each `message` object in the aforementioned array contains a single received message. The array is arranged from most recent to least recent.
 
 | Field | Description |
+| ----- | ----------- |
 | from | User ID of the sender |
 | to | User ID of the recipient |
 | id | Unique ID of this message; will someday be used to report abusive behavior, etc. |
