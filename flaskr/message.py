@@ -61,7 +61,7 @@ def receive():
         message["from"] = sender
         message["to"] = request.args.get("id")
         message["id"] = "0"     # TODO!!!
-        message["timestamp"] = str(row[3])
+        message["timestamp"] = str(row[4])
         message["text"] = row[5]
         message["attachment"] = row[6]
 
