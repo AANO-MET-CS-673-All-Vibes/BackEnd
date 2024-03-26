@@ -76,11 +76,73 @@ def receive():
     return api.response(json.dumps(response))
 
 # history(): retrieves message history
-# GET parameters: "id" and "from"
+# GET parameters: "id" and "context" and "page"
 
 def history():
-    # PLACEHOLDER
-    response = {}
-    response["status"] = "ok"
+    me = user.get_internal_id(request.args.get("id"))
+    context = request.args.get("context")
+    page = int(request.args.get("page"))
 
+    response = {}
+    if match.is_match(me, context) is False:
+        response["status"] = "fail - attempt to retrieve message history with non-match"
+        return api.response(json.dumps(response))
+    
+    # pull from the database
+    cursor = db.cursor()
+    count = cursor.execute("SELECT * FROM messages WHERE (sender='" + me + "' AND recipient='" + context + "') OR (sender='" + context + "' AND recipient='" + me + "') ORDER BY sent_time DESC")
+
+    if count < (page*20):
+        cursor.close()
+        response["status"] = "ok"
+        response["count"] = 0
+        response["last_page"] = True
+        response["messages"] = []
+        return api.response(json.dumps(response))
+
+    messages = []
+    final_count = 0
+
+    # keep going until we reach our desired page
+    for i in range(page*20):
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            response["status"] = "ok"
+            response["count"] = 0
+            response["last_page"] = True
+            response["messages"] = []
+            return api.response(json.dumps(response))
+
+    for i in range(count):
+        message = {}
+        row = cursor.fetchone()
+
+        if row[0] == me:
+            message["form"] = request.args.get("id")
+        else:
+            message["from"] = row[0]
+
+        if row[1] == me:
+            message["to"] = request.args.get("id")
+        else:
+            message["to"] = row[1]
+        
+        message["id"] = row[3]
+        message["timestamp"] = str(row[4])
+        message["text"] = row[5]
+        message["attachment"] = row[6]
+
+        messages.append(message)
+        final_count = final_count+1
+    
+    cursor.close()
+    response["status"] = "ok"
+    response["count"] = final_count
+
+    if final_count < 20:
+        response["last_page"] = True
+
+    response["messages"] = messages
+    
     return api.response(json.dumps(response))
