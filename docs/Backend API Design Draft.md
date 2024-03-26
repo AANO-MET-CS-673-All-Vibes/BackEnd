@@ -372,13 +372,78 @@ Much like in `/send`, `attachment` may be empty in the case of no attachments. I
 {
     "status": "ok",
     "messages": [
-        /* TODO */
+        {
+            "from": "f870e60f-e574-4c6b-ba64-b50a0b19e2cc",
+            "to": "23b4b38f-ec20-4762-891d-b05d9292645f",
+            "id": "4ffe29a2-8f93-4aee-bfe4-c69b342abd6b",
+            "timestamp": "2024-03-25 21:11:03",
+            "text": "thank you!! i really like yours too! c:",
+            "attachment": ""
+        }
     ]
 }
 ```
 
 ## 1.11. Retrieve message history
-TODO
+The endpoint `/history` is used to retrieve message history between matches. It includes messages sent by both the user (the one sending the request) and their match (the "context"). This function also marks all messages as having been seen at the exact time the function was called, if they hadn't already by that point in time.
+
+This function divides messages up into "pages" for network efficiency, where each page contains up to 20 messages sent in either direction. The client requests additional pages as the user attempts to scroll earlier up in the conversation.
+
+This endpoint uses HTTP GET and takes 3 parameters.
+
+| Parameter | Description |
+| --------- | ----------- |
+| id | User ID of the user |
+| context | User ID of the match |
+| page | Page number to retrieve; this number is zero-based |
+
+Upon success, the following object is returned.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" |
+| count | The number of messages returned in this response |
+| last_page | Boolean value indicating whether this page is the earliest message history |
+| messages | Array of `message` objects |
+
+The `message` object is defined in the same as is defined under the `/receive` endpoint, and in the same way they are arranged in order of most recent to least recent within the array.
+
+The `last_page` field is set to `true` if this is the last valid page for this conversation, i.e. the client has scrolled up the very first message in the conversation, and subsequent calls to this API will return an array of size zero and `count` set to zero. Likewise, a `count` value of less than 20 should also be interpreted as `last_page` being set to `true`.
+
+**Example response:**
+```json
+{
+    "status": "ok",
+    "count": 3,
+    "last_page": true,
+    "messages": [
+        {
+            "from": "23b4b38f-ec20-4762-891d-b05d9292645f",
+            "to": "f870e60f-e574-4c6b-ba64-b50a0b19e2cc",
+            "id": "87f2e412-1b81-49c6-a4f9-11509c91f620",
+            "timestamp": "2024-03-25 21:12:28",
+            "text": "thank you! so what do you do for a living?",
+            "attachment": ""
+        },
+        {
+            "from": "f870e60f-e574-4c6b-ba64-b50a0b19e2cc",
+            "to": "23b4b38f-ec20-4762-891d-b05d9292645f",
+            "id": "4ffe29a2-8f93-4aee-bfe4-c69b342abd6b",
+            "timestamp": "2024-03-25 21:11:03",
+            "text": "thank you!! i really like yours too! c:",
+            "attachment": ""
+        },
+        {
+            "from": "23b4b38f-ec20-4762-891d-b05d9292645f",
+            "to": "f870e60f-e574-4c6b-ba64-b50a0b19e2cc",
+            "id": "614f90ce-dc8d-4cbe-91c1-dca825c555ba",
+            "timestamp": "2024-03-25 21:08:42",
+            "text": "heyy, i really like your hair color",
+            "attachment": ""
+        }
+    ]
+}
+```
 
 ## 1.12. Upload media attachment
 TODO
