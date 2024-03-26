@@ -65,7 +65,7 @@ def create_app(test_config=None):
     def route_receive():
         return message.receive()
     
-    @app.route("/msghistory")
+    @app.route("/history")
     def route_history():
         return message.history()
 

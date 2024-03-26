@@ -72,7 +72,8 @@ def receive():
     response["messages"] = messages
     return api.response(json.dumps(response))
 
-# history(): retrieves message hisotory
+# history(): retrieves message history
+# GET parameters: "id" and "from"
 
 def history():
     # PLACEHOLDER
