@@ -1,6 +1,6 @@
 from flask import Flask, redirect, url_for, request
 from datetime import datetime
-import pymysql, spotipy, json
+import pymysql, spotipy, json, uuid
 from flaskr import api, user, recs, match
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
@@ -17,6 +17,9 @@ def send():
     if match.is_match(sender, recipient) is False:
         response["status"] = "fail - attempt to send message to non-match"
         return api.response(json.dumps(response))
+    
+    # generate a UUID for this message, to be used for reporting abusive behavior, etc
+    id = uuid.uuid4()
 
     text = request.form["text"]
     attachment = request.form["attachment"]
@@ -26,7 +29,7 @@ def send():
     date_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
     cursor = db.cursor()
-    count = cursor.execute("INSERT INTO messages (sender, recipient, seen, sent_time, text, attachment) VALUES ('" + sender + "', '" + recipient + "', false, '"+ date_string + "', '" + text + "', '" + attachment + "')")
+    count = cursor.execute("INSERT INTO messages (sender, recipient, id, seen, sent_time, text, attachment) VALUES ('" + sender + "', '" + recipient + "', '" + id + "', false, '"+ date_string + "', '" + text + "', '" + attachment + "')")
     cursor.close()
 
     if count != 1:
@@ -60,7 +63,7 @@ def receive():
 
         message["from"] = sender
         message["to"] = request.args.get("id")
-        message["id"] = "0"     # TODO!!!
+        message["id"] = row[3]
         message["timestamp"] = str(row[4])
         message["text"] = row[5]
         message["attachment"] = row[6]
