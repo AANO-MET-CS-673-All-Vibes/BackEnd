@@ -147,3 +147,28 @@ def matches():
     response["people"] = people
 
     return api.response(json.dumps(response))
+
+# unmatch(): removes a match
+# HTTP POST parameters: "me" and "other"
+
+def unmatch():
+    response = {}
+
+    me = user.get_internal_id(request.form["me"])
+    other = request.form["other"]
+
+    # unmatch time
+    now = datetime.now()
+    date_string = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    # update the match table
+    cursor = db.cursor()
+    count = cursor.execute("UPDATE matches SET unmatched=true,unmatch_time='" + date_string + "' WHERE (id1='" + me + "' AND id2='" + other + "') OR (id1='" + other + "' AND id2='" + me + "')")
+    cursor.close()
+
+    if count != 1:
+        response["status"] = "fail"
+        return api.response(json.dumps(response))
+    
+    response["status"] = "ok"
+    return api.response(json.dumps(response))

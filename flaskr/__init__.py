@@ -68,6 +68,10 @@ def create_app(test_config=None):
     @app.route("/history")
     def route_history():
         return message.history()
+    
+    @app.route("/unmatch", methods=["POST"])
+    def route_unmatch():
+        return match.unmatch()
 
     return app
 
