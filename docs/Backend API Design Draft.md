@@ -1,5 +1,5 @@
 # allvibes API
-This draft outlines the design of the allvibes backend and its subsequent REST API. In brief, the server maintains no concept of "sessions"; sessions must be maintained entirely on the client side. Each piece of functionality making up the entire app is exposed as REST APIs, most of which are called via HTTP GET requests with several exceptions using HTTP POST. No function in this list depends on state or any previous functions. State is maintained entirely on the client side.
+This draft outlines the design of the allvibes backend and its subsequent REST API. In brief, the server maintains no concept of "sessions"; sessions must be maintained entirely on the client side. Each piece of functionality making up the entire app is exposed as REST API endpoints, most of which are called via HTTP GET requests with several exceptions using HTTP POST. No function in this list depends on state or any previous functions. State is maintained entirely on the client side.
 
 The main point of this concept, aside from complying with REST design principles, is to reduce the number of redirects within the backend to as little as possible, being zero for nearly all the functions, enabling smoother frontend development and higher responsiveness with ultimately a lower number of pages.
 
@@ -7,14 +7,14 @@ For the HTTP GET requests, parameters are specified as GET parameters, that is i
 
 Responses from the server to the client are always in JSON format, with the `Content-Type` being set to `application/json`. There are no exceptions to this.
 
-The full behavior of each function is outlined in this document.
+The full behavior of each endpoint is outlined in this document.
 
-# 1. List of API functions
+# 1. List of API endpoints
 
 ## 1.1. Log in
 We depend on Spotify authentication to log in.
 
-To cope with CORS restrictions, there are two login functions: `/login` and `/weblogin`. The difference is that `/login` is REST-compliant while `/weblogin` performs redirects and does not directly return JSON. Both these functions are called via HTTP GET and take no parameters.
+To cope with CORS restrictions, there are two login endpoints: `/login` and `/weblogin`. The difference is that `/login` is REST-compliant while `/weblogin` performs redirects and does not directly return JSON. Both these functions are called via HTTP GET and take no parameters.
 
 In the case of `/login`, the returned JSON object is:
 
@@ -449,7 +449,18 @@ The `last_page` field is set to `true` if this is the last valid page for this c
 TODO
 
 ## 1.13. Unmatch
-TODO
+The endpoint `/unmatch` is used to unmatch with a match. It is requested via HTTP POST and takes two parameters.
+
+| Parameter | Description |
+| --------- | ----------- |
+| me | User ID of the current user |
+| other | User ID of the match to be unmatched |
+
+Upon success, the object returned indicates only whether or not the unmatch happened.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" |
 
 ## 1.14. Block/report match
 TODO
