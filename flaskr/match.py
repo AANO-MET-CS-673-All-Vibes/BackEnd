@@ -170,5 +170,6 @@ def unmatch():
         response["status"] = "fail"
         return api.response(json.dumps(response))
     
+    db.commit()
     response["status"] = "ok"
     return api.response(json.dumps(response))
