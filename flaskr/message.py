@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request
-from datetime import datetime
+from datetime import datetime, timezone
 import pymysql, spotipy, json, uuid
 from flaskr import api, user, recs, match
 
@@ -25,7 +25,7 @@ def send():
     attachment = request.form["attachment"]
 
     # here we at least know they're matches, so simply insert into the database
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     date_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
     cursor = db.cursor()

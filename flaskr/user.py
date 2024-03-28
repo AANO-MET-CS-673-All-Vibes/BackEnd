@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request
-from datetime import datetime
+from datetime import datetime, timezone
 import pymysql, spotipy, json
 from flaskr import api
 
@@ -52,7 +52,7 @@ def update():
     row = cursor.fetchone()
 
     last_updated = row[9]
-    now = datetime.now().date()
+    now = datetime.now(timezone.utc).date()
     #print("last updated: " + str(last_updated))
 
     # only update if a certain duration has passed since the last update

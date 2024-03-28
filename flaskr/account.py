@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request
-from datetime import datetime
+from datetime import datetime, timezone
 import pymysql, spotipy, uuid, json
 from flaskr import login, api
 
@@ -48,7 +48,7 @@ def create():
     internal_id = uuid.uuid4()  # for security
 
     # account creation date
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     date_string = now.strftime("%Y-%m-%d")
 
     # now add to the initial accounts table

@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request
-from datetime import datetime
+from datetime import datetime, timezone
 import pymysql, spotipy, json
 from flaskr import api, user, recs
 
@@ -67,7 +67,7 @@ def attempt():
     # 0 = dislike, 1 or anything else = like
     like = (int(like_post) >= 1)
 
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     date_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
     # first check if the other user has already swiped; this means checking if ID1 == other and ID2 == me
@@ -158,7 +158,7 @@ def unmatch():
     other = request.form["other"]
 
     # unmatch time
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     date_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
     # update the match table
