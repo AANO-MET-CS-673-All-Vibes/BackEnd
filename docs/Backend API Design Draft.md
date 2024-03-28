@@ -109,6 +109,8 @@ Requests to `/userinfo` with an HTTP GET parameter named `id` will return the fo
 | top_artists | Array of the user's top 10 artists over the past few months |
 | last_online | Date/time the user was last online in `YYYY-MM-DD HH:MM:SS` format |
 
+The timezone of `last_online` is always UTC.
+
 Elements of `top_tracks` are defined as follows.
 
 | Field | Description |
@@ -365,7 +367,7 @@ Each `message` object in the aforementioned array contains a single received mes
 | text | Text content of the message; may be empty in case of attachment-only messages |
 | attachment | URLs to attachments in this message |
 
-Much like in `/send`, `attachment` may be empty in the case of no attachments. In the case of multiple attachments, each two URLs are separated by a semicolon.
+Much like in `/send`, `attachment` may be empty in the case of no attachments. In the case of multiple attachments, each two URLs are separated by a semicolon. The `timestamp` field is also in UTC time.
 
 **Example response:**
 ```json
