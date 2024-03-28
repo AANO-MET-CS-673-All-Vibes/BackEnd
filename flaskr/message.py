@@ -29,7 +29,7 @@ def send():
     date_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
     cursor = db.cursor()
-    count = cursor.execute("INSERT INTO messages (sender, recipient, id, seen, sent_time, text, attachment) VALUES ('" + sender + "', '" + recipient + "', '" + id + "', false, '"+ date_string + "', '" + text + "', '" + attachment + "')")
+    count = cursor.execute("INSERT INTO messages (sender, recipient, id, seen, sent_time, text, attachment) VALUES ('" + sender + "', '" + recipient + "', '" + str(id) + "', false, '"+ date_string + "', '" + text + "', '" + attachment + "')")
     cursor.close()
 
     if count != 1:
