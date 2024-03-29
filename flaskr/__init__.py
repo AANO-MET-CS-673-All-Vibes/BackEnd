@@ -72,6 +72,10 @@ def create_app(test_config=None):
     @app.route("/unmatch", methods=["POST"])
     def route_unmatch():
         return match.unmatch()
+    
+    @app.route("/attach", methods=["POST"])
+    def route_attach():
+        return message.attach()
 
     return app
 

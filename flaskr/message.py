@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, request
 from datetime import datetime, timezone
 import pymysql, spotipy, json, uuid
 from flaskr import api, user, recs, match
+from werkzeug.utils import secure_filename
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
 
@@ -145,4 +146,31 @@ def history():
 
     response["messages"] = messages
     
+    return api.response(json.dumps(response))
+
+# attach(): uploads a media attachment
+# HTTP POST only - encoding type must be multipart/form-data
+# Parameters:
+# "id" of the current user
+# "data" raw file data
+
+def attach():
+    id = user.get_internal_id(request.form["id"])
+    data = request.files.get("data")
+    file_id = uuid.uuid4()
+
+    extension = data.filename.split(".")[-1].lower()
+
+    filename = id + "-" + str(file_id) + "." + extension
+
+    # TODO: uncomment this and comment the next line when we reach the deployment stage
+    #data.save("../../allvibes-frontend/cdn/a/" + filename)
+    data.save(filename)
+
+    response = {}
+    response["status"] = "ok"
+
+    # TODO: likewise uncomment this and commejnt the next line when we reach the deployment stage
+    #response["path"] = "/cdn/a/" + filename
+    response["path"] = "/" + filename
     return api.response(json.dumps(response))
