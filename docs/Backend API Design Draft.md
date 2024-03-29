@@ -448,7 +448,31 @@ The `last_page` field is set to `true` if this is the last valid page for this c
 ```
 
 ## 1.12. Upload media attachment
-TODO
+The `/attach` endpoint is used to upload media for use within a conversation. The client requests it _before_ requesting `/send`, as this function returns the URL to the media that can be used within the `/send` request.
+
+This endpoint uses HTTP POST, and unlike most of the other endpoints, its encoding type `enctype` must be set to `multipart/form-data` to allow for file uploading. It takes two parameters.
+
+| Parameter | Description |
+| --------- | ----------- |
+| id | User ID of the current user |
+| data | File binary to be uploaded |
+
+Upon success, the endpoint returns a path to the uploaded file that can be used within the `attachment` field of the `/send` endpoint as mentioned previously.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" |
+| path | Path to the file uploaded |
+
+The file name of the uploaded files will always consist of two concatenated UUIDs; the first is the internal ID of the user uploading said file (allowing for easy monitoring in case of reported abusive behavior), and the second is unique to this file.
+
+**Example response:**
+```json
+{
+    "status": "ok",
+    "path": "/cdn/a/f870e60f-e574-4c6b-ba64-b50a0b19e2cc-807506d6-3770-4365-8a84-9915ed75c2ce.jpg"
+}
+```
 
 ## 1.13. Unmatch
 The endpoint `/unmatch` is used to unmatch with a match. It is requested via HTTP POST and takes two parameters.
