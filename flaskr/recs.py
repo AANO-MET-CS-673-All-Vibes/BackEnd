@@ -84,6 +84,17 @@ def recs():
             people.append(person)
 
     cursor.close()
+
+    # now sort the people in descending order
+    if len(people) > 1:
+        for i in range(len(people)-1):
+            if people[i]["score"] < people[i+1]["score"]:
+                temp = people[i+1]
+                people[i+1] = people[i]
+                people[i] = temp
+
+                i = 0
+
     response["status"] = "ok"
     response["people"] = people
 
