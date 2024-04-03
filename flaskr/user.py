@@ -131,6 +131,7 @@ def get_profile(id):
     cursor = db.cursor()
     count = cursor.execute("SELECT * FROM users WHERE id='" + id + "' OR internal_id='" + id + "'")
     if count == 0:
+        cursor.close()
         return None
     
     row = cursor.fetchone()
