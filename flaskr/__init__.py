@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from flaskr import login, account, user, recs, match, message
+from flaskr import login, account, user, recs, match, message, edit
 
 def create_app(test_config=None):
     # create and configure the app
@@ -76,6 +76,10 @@ def create_app(test_config=None):
     @app.route("/attach", methods=["POST"])
     def route_attach():
         return message.attach()
+    
+    @app.route("/edit/bio", methods=["POST"])
+    def route_edit_bio():
+        return edit.bio()
 
     return app
 
