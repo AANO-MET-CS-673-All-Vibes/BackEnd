@@ -491,7 +491,7 @@ Upon success, the object returned indicates only whether or not the unmatch happ
 ## 1.14. Block/report match
 TODO
 
-## 1.15. Profile editing
+## 1.15. Profile editing endpoints
 A variety of endpoints to edit the user's profile are provided under `/edit/`. These requests all use HTTP POST and they all return nothing but a status field as follows.
 
 | Field | Description |
@@ -500,7 +500,7 @@ A variety of endpoints to edit the user's profile are provided under `/edit/`. T
 
 There is a separate endpoint to modify each part of the user's profile, and they are defined as follows.
 
-### 1.15.1. Edit bio
+### 1.15.1. Bio
 The endpoint `/edit/bio` allows the user to edit their bio. It takes two parameters via HTTP POST.
 
 | Parameter | Description |
@@ -508,10 +508,10 @@ The endpoint `/edit/bio` allows the user to edit their bio. It takes two paramet
 | id | User ID of the current user |
 | bio | Text for the next bio |
 
-### 1.15.2. Edit profile picture
+### 1.15.2. Profile picture
 TODO
 
-### 1.15.3. Edit name
+### 1.15.3. Name
 TODO
 
 ## 1.16. Event notifications
