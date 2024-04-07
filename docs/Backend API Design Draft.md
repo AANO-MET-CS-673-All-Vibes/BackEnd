@@ -252,7 +252,7 @@ The elements of `artists` and `tracks` are defined in the same way as is defined
 ```
 
 ## 1.7. Like/dislike someone
-This function is valid for the IDs returned by `/recs` to like or dislike them. Requests are sent via HTTP POST and take 3 parameters.
+This endpoint `/attempt` is valid for the IDs returned by `/recs` to like or dislike them. Requests are sent via HTTP POST and take 3 parameters.
 
 | Parameter | Description |
 | --------- | ----------- |
@@ -491,8 +491,28 @@ Upon success, the object returned indicates only whether or not the unmatch happ
 ## 1.14. Block/report match
 TODO
 
-## 1.15. Profile updates
-TODO: this should probably be very similar to account creation; it's nothing more than updating the user's info in the main table
+## 1.15. Profile editing
+A variety of endpoints to edit the user's profile are provided under `/edit/`. These requests all use HTTP POST and they all return nothing but a status field as follows.
+
+| Field | Description |
+| ----- | ----------- |
+| status | Should be "ok" or a possible error message if an error arises |
+
+There is a separate endpoint to modify each part of the user's profile, and they are defined as follows.
+
+### 1.15.1. Edit bio
+The endpoint `/edit/bio` allows the user to edit their bio. It takes two parameters via HTTP POST.
+
+| Parameter | Description |
+| --------- | ----------- |
+| id | User ID of the current user |
+| bio | Text for the next bio |
+
+### 1.15.2. Edit profile picture
+TODO
+
+### 1.15.3. Edit name
+TODO
 
 ## 1.16. Event notifications
 TODO
