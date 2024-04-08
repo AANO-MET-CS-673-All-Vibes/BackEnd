@@ -81,5 +81,9 @@ def create_app(test_config=None):
     def route_edit_bio():
         return edit.bio()
 
+    @app.route("/edit/pfp", methods=["POST"])
+    def route_edit_pfp():
+        return edit.pfp()
+
     return app
 
