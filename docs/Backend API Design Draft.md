@@ -509,7 +509,12 @@ The endpoint `/edit/bio` allows the user to edit their bio. It takes two paramet
 | bio | Text for the next bio |
 
 ### 1.15.2. Profile picture
-TODO
+The endpoint `/edit/pfp` allows the user to edit their profile picture. This endpoint requires that the encoding type `enctype` be set to `multipart/form-data` to allow file uploading. The two HTTP POST parameters are defined as follows.
+
+| Parameter | Description |
+| --------- | ----------- |
+| id | User ID of the current user |
+| data | Raw binary stream of the uploaded file data |
 
 ### 1.15.3. Name
 TODO
