@@ -15,20 +15,20 @@ CREATE TABLE IF NOT EXISTS `users` (
 	`encrypted_image` varchar(255),
 	`encrypted_top_tracks` json,
 	`encrypted_top_artists` json,
-	`encrypted_last_updated` date,
-	`encrypted_last_online` timestamp,
-	`encrypted_like_count` int,
+	`last_updated` date,
+	`last_online` timestamp,
+	`like_count` int,
 	PRIMARY KEY (`encrypted_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `matches` (
-	`encrypted_id1` varchar(36) NOT NULL,
-	`encrypted_id2` varchar(36) NOT NULL,
-	`encrypted_matched` tinyint(1),
-	`encrypted_unmatched` tinyint(1),
-	`encrypted_attempt_time` timestamp,
-	`encrypted_match_time` timestamp,
-	`encrypted_unmatch_time` timestamp
+	`id1` varchar(36) NOT NULL,
+	`id2` varchar(36) NOT NULL,
+	`matched` tinyint(1),
+	`unmatched` tinyint(1),
+	`attempt_time` timestamp,
+	`match_time` timestamp,
+	`unmatch_time` timestamp
 );
 
 CREATE TABLE IF NOT EXISTS `messages` (
