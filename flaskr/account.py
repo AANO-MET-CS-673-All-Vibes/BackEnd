@@ -62,7 +62,10 @@ def create():
         return api.response(json.dumps(response))
 
     # now to the user table
-    rows = cursor.execute("INSERT INTO users ( id, internal_id, name, gender, dob, like_count ) VALUES ( \"" + str(id) + "\", \"" + str(internal_id) + "\", \"" + request.form["name"] + "\", \"" + request.form["gender"] + "\", \"" + request.form["dob"] + "\", \"0\" )")
+    name=request.form["name"]
+    gender=request.form["gender"]
+    dob=request.form["dob"]
+    rows = cursor.execute("INSERT INTO users ( id, internal_id, name, gender, dob, like_count ) VALUES ( \"" + str(id) + "\", \"" + str(internal_id) + "\", \"" + name + "\", \"" + gender + "\", \"" + dob + "\", \"0\" )")
 
     if rows != 1:
         response["status"] = "fail"
