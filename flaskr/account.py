@@ -50,10 +50,11 @@ def create():
     # account creation date
     now = datetime.now(timezone.utc)
     date_string = now.strftime("%Y-%m-%d")
+    email = request.form["email"]
 
     # now add to the initial accounts table
     cursor = db.cursor()
-    rows = cursor.execute("INSERT INTO accounts ( id, email, created ) VALUES ( \"" + str(id) + "\", \"" + request.form["email"] + "\", \"" + date_string + "\" )")
+    rows = cursor.execute("INSERT INTO accounts ( id, email, created ) VALUES ( \"" + str(id) + "\", \"" + email + "\", \"" + date_string + "\" )")
 
     if rows != 1:
         response["status"] = "fail"
