@@ -1,13 +1,13 @@
 CREATE TABLE IF NOT EXISTS `accounts` (
-	`encrypted_id` varchar(36) NOT NULL UNIQUE,
+	`id` varchar(36) NOT NULL UNIQUE,
 	`encrypted_email` varchar(50) NOT NULL UNIQUE,
 	`created` timestamp,
 	PRIMARY KEY (`encrypted_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `users` (
-	`encrypted_id` varchar(36) NOT NULL UNIQUE,
-	`encrypted_internal_id` varchar(36) NOT NULL UNIQUE,
+	`id` varchar(36) NOT NULL UNIQUE,
+	`internal_id` varchar(36) NOT NULL UNIQUE,
 	`encrypted_name` varchar(50),
 	`encrypted_gender` int,
 	`encrypted_dob` date,
