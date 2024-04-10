@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 # Input validation function for gender
 def validate_gender(gender):
     if gender not in [0, 1]:  # Assuming 0 is male, 1 is female
