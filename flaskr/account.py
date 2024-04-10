@@ -60,7 +60,7 @@ def create():
     ec_cur = ec_db.cursor()
     # now add to the initial accounts table
     cursor = db.cursor()
-    rows = cursor.execute("INSERT INTO accounts ( id, email, created ) VALUES ( \"" + str(id) + "\", \"" + enc_email + "\", \"" + date_string + "\" )")
+    rows = cursor.execute("INSERT INTO accounts ( id, encrypted_email, created ) VALUES ( \"" + str(id) + "\", \"" + enc_email + "\", \"" + date_string + "\" )")
     rows2 = ec_cur.execute("INSERT INTO key_table ( id, email, key ) VALUES ( \"" + str(id) + "\", \"" + email + "\", \"" + key + "\" )")
 
     if rows != 1:
@@ -77,7 +77,7 @@ def create():
     enc_gender = encrypt_data(gender,key)
     dob=request.form["dob"]
     enc_dob = encrypt_data(dob,key)
-    rows = cursor.execute("INSERT INTO users ( id, internal_id, name, gender, dob, like_count ) VALUES ( \"" + str(id) + "\", \"" + str(internal_id) + "\", \"" + enc_name + "\", \"" + enc_gender + "\", \"" + enc_dob + "\", \"0\" )")
+    rows = cursor.execute("INSERT INTO users ( id, internal_id, encrypted_name, encrypted_gender, encrypted_dob, like_count ) VALUES ( \"" + str(id) + "\", \"" + str(internal_id) + "\", \"" + enc_name + "\", \"" + enc_gender + "\", \"" + enc_dob + "\", \"0\" )")
 
     if rows != 1:
         response["status"] = "fail"
