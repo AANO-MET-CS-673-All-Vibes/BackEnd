@@ -10,6 +10,7 @@ db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="All
 def bio():
     id = request.form["id"]
     bio = request.form["bio"]
+    bio = bio.replace("'", "\'\'")
 
     response = {}
 

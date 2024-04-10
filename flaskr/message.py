@@ -23,6 +23,7 @@ def send():
     id = uuid.uuid4()
 
     text = request.form["text"]
+    text = text.replace("'", "''")
     attachment = request.form["attachment"]
 
     # here we at least know they're matches, so simply insert into the database
