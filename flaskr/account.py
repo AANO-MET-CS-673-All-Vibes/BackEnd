@@ -5,7 +5,7 @@ from flaskr import login, api
 from initial_encrypt_generation import encrypt_data, generate_key, decrypt_data
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
-ec_db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")#please change the details of the password and database
+ec_db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes02", database="allvibes")#please change the details of the password and database
 
 # TO AMRUTHA: FEEL FREE TO REWRITE ALL OF THE DATABASE INTERACTIONS AS YOU SEE FIT
 # in this prototype architecture, we just depend on a MySQL table called "accounts"
