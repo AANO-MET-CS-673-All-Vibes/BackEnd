@@ -48,8 +48,4 @@ ALTER TABLE `matches` ADD CONSTRAINT `matches_fk0` FOREIGN KEY (`encrypted_id1`)
 ALTER TABLE `matches` ADD CONSTRAINT `matches_fk1` FOREIGN KEY (`encrypted_id2`) REFERENCES `users`(`encrypted_internal_id`);
 ALTER TABLE `messages` ADD CONSTRAINT `messages_fk0` FOREIGN KEY (`from`) REFERENCES `users`(`encrypted_internal_id`);
 
-<<<<<<< Updated upstream
 ALTER TABLE `messages` ADD CONSTRAINT `messages_fk1` FOREIGN KEY (`to`) REFERENCES `users`(`encrypted_internal_id`);
-=======
-ALTER TABLE `messages` ADD CONSTRAINT `messages_fk1` FOREIGN KEY (`to`) REFERENCES `users`(`encrypted_internal_id`);
->>>>>>> Stashed changes
