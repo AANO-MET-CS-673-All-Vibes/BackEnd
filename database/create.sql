@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 	`encrypted_dob` date,
 	`encrypted_bio` varchar(300),
 	`image` varchar(255),
-	`encrypted_top_tracks` json,
-	`encrypted_top_artists` json,
+	'top_tracks` json,
+	`top_artists` json,
 	`last_updated` date,
 	`last_online` timestamp,
 	`like_count` int,
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS `matches` (
 );
 
 CREATE TABLE IF NOT EXISTS `messages` (
-	`encrypted_sender` varchar(36) NOT NULL,
-	`encrypted_recipient` varchar(36) NOT NULL,
+	`sender` varchar(36) NOT NULL,
+	`recipient` varchar(36) NOT NULL,
 	`encrypted_seen` tinyint(1),
 	`encrypted_sent_time` timestamp,
 	`encrypted_seen_time` timestamp,
