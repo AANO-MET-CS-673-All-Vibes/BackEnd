@@ -2,7 +2,7 @@ from flask import Flask, redirect, url_for, request
 from datetime import datetime, timezone
 import pymysql, spotipy, uuid, json
 from flaskr import login, api
-from initial_encrypt_generation import encrypt_data, generate_key, decrypt_data
+from flaskr.initial_encrypt_generation import encrypt_data, generate_key, decrypt_data
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
 ec_db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes02", database="allvibes")#please change the details of the password and database
