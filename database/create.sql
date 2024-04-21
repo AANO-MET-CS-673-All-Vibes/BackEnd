@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 	`encrypted_gender` int,
 	`encrypted_dob` date,
 	`encrypted_bio` varchar(300),
-	`encrypted_image` varchar(255),
+	`image` varchar(255),
 	`encrypted_top_tracks` json,
 	`encrypted_top_artists` json,
 	`last_updated` date,
