@@ -61,7 +61,7 @@ def create():
     # now add to the initial accounts table
     cursor = db.cursor()
     rows = cursor.execute("INSERT INTO accounts ( id, encrypted_email, created ) VALUES ( \"" + str(id) + "\", \"" + enc_email + "\", \"" + date_string + "\" )")
-    rows2 = ec_cur.execute("INSERT INTO key_table ( id, email, key ) VALUES ( \"" + str(id) + "\", \"" + email + "\", \"" + key + "\" )")
+    rows2 = ec_cur.execute("INSERT INTO key_table ( id, email, key_value ) VALUES ( \"" + str(id) + "\", \"" + email + "\", \"" + key + "\" )")
 
     if rows != 1:
         response["status"] = "fail"
