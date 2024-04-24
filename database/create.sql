@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 	`id` varchar(36) NOT NULL UNIQUE,
 	`encrypted_email` varchar(50) NOT NULL UNIQUE,
 	`created` timestamp,
-	PRIMARY KEY (`encrypted_id`)
+	PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `users` (
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 	`last_updated` date,
 	`last_online` timestamp,
 	`like_count` int,
-	PRIMARY KEY (`encrypted_id`)
+	PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `matches` (
@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS `messages` (
 );
 
 
-ALTER TABLE `users` ADD CONSTRAINT `users_fk0` FOREIGN KEY (`encrypted_id`) REFERENCES `accounts`(`encrypted_id`);
-ALTER TABLE `matches` ADD CONSTRAINT `matches_fk0` FOREIGN KEY (`encrypted_id1`) REFERENCES `users`(`encrypted_internal_id`);
+ALTER TABLE `users` ADD CONSTRAINT `users_fk0` FOREIGN KEY (`id`) REFERENCES `accounts`(`id`);
+ALTER TABLE `matches` ADD CONSTRAINT `matches_fk0` FOREIGN KEY (`id1`) REFERENCES `users`(`internal_id`);
 
-ALTER TABLE `matches` ADD CONSTRAINT `matches_fk1` FOREIGN KEY (`encrypted_id2`) REFERENCES `users`(`encrypted_internal_id`);
-ALTER TABLE `messages` ADD CONSTRAINT `messages_fk0` FOREIGN KEY (`from`) REFERENCES `users`(`encrypted_internal_id`);
+ALTER TABLE `matches` ADD CONSTRAINT `matches_fk1` FOREIGN KEY (`id2`) REFERENCES `users`(`internal_id`);
+ALTER TABLE `messages` ADD CONSTRAINT `messages_fk0` FOREIGN KEY (`from`) REFERENCES `users`(`internal_id`);
 
-ALTER TABLE `messages` ADD CONSTRAINT `messages_fk1` FOREIGN KEY (`to`) REFERENCES `users`(`encrypted_internal_id`);
+ALTER TABLE `messages` ADD CONSTRAINT `messages_fk1` FOREIGN KEY (`to`) REFERENCES `users`(`internal_id`);
