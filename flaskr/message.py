@@ -97,6 +97,9 @@ def history():
     me = user.get_internal_id(request.args.get("id"))
     context = request.args.get("context")
     page = int(request.args.get("page"))
+    id = request.form["from"]
+    key = get_key_for_id(id)
+
 
     response = {}
     if match.is_match(me, context) is False:
@@ -134,7 +137,7 @@ def history():
         row = cursor.fetchone()
 
         if row[0] == me:
-            message["form"] = request.args.get("id")
+            message["from"] = request.args.get("id")
         else:
             message["from"] = row[0]
 
@@ -145,8 +148,8 @@ def history():
         
         message["id"] = row[3]
         message["timestamp"] = str(row[4])
-        message["text"] = row[6]
-        message["attachment"] = row[7]
+        message["text"] = decrypt_data(row[6],key)
+        message["attachment"] = decrypt_data(row[7],key)
 
         messages.append(message)
         final_count = final_count+1
