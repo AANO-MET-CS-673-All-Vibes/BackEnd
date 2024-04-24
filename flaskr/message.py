@@ -80,8 +80,8 @@ def receive():
         message["to"] = request.args.get("id")
         message["id"] = row[3]
         message["timestamp"] = str(row[4])
-        message["text"] = row[6]
-        message["attachment"] = row[7]
+        message["text"] = decrypt_data(row[6],key)
+        message["attachment"] = decrypt_data(row[7],key)
 
         messages.append(message)
     
