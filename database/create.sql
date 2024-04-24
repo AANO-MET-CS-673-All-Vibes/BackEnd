@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS `matches` (
 CREATE TABLE IF NOT EXISTS `messages` (
 	`sender` varchar(36) NOT NULL,
 	`recipient` varchar(36) NOT NULL,
-	`encrypted_seen` tinyint(1),
-	`encrypted_sent_time` timestamp,
-	`encrypted_seen_time` timestamp,
+	`seen` tinyint(1),
+	`sent_time` timestamp,
+	`seen_time` timestamp,
 	`encrypted_text` varchar(500),
 	`encrypted_attachment` varchar(500)
 );
