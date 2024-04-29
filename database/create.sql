@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 	`encrypted_name` varchar(50),
 	`encrypted_gender` int,
 	`encrypted_dob` date,
-	`encrypted_bio` varchar(300),
+	`bio` varchar(300),
 	`image` varchar(255),
 	'top_tracks` json,
 	`top_artists` json,
