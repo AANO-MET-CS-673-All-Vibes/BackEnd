@@ -79,5 +79,5 @@ def websignup():
     output = create()
     output = json.loads(str(output[0]))
 
-    return redirect("http://127.0.0.1:8080/profile.html?id=" + output["id"] + "&token=" + output["token"])
+    return redirect("https://allvibes.jewelcodes.io/profile.html?id=" + output["id"] + "&token=" + output["token"])
 
