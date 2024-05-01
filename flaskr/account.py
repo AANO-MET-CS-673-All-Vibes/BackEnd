@@ -45,7 +45,7 @@ def create():
     response = {}
 
     # input validation
-    if not input_validation.validate_name(response.form["name"]):
+    if not input_validation.validate_name(request.form["name"]):
         response["status"] = "fail"
         return api.response(json.dumps(response))
 
