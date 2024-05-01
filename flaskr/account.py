@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, request
 from datetime import datetime, timezone
 import pymysql, spotipy, uuid, json
-from flaskr import login, api
+from flaskr import login, api, input_validation
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
 
@@ -43,6 +43,11 @@ def email_to_id(email):
 
 def create():
     response = {}
+
+    # input validation
+    if not input_validation.validate_name(response.form["name"]):
+        response["status"] = "fail"
+        return api.response(json.dumps(response))
 
     id = uuid.uuid4()           # first generate a UUID
     internal_id = uuid.uuid4()  # for security

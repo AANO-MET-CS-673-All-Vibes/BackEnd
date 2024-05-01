@@ -1,6 +1,6 @@
 from flask import Flask, redirect, url_for, request
 import pymysql, json, uuid
-from flaskr import api
+from flaskr import api, input_validation
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
 
@@ -13,6 +13,10 @@ def bio():
     bio = bio.replace("'", "\'\'")
 
     response = {}
+
+    if not input_validation.validate_bio(bio):
+        response["status"] = "fail"
+        return api.response(json.dumps(response))
 
     cursor = db.cursor()
     count = cursor.execute("UPDATE users SET bio='" + bio + "' WHERE id='" + id + "'")
