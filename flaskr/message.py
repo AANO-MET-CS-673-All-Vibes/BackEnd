@@ -3,15 +3,25 @@ from datetime import datetime, timezone
 import pymysql, spotipy, json, uuid
 from flaskr import api, user, recs, match
 from werkzeug.utils import secure_filename
+from flaskr.initial_encrypt_generation import encrypt_data, generate_key, decrypt_data
 
 db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes01", database="allvibes")
-
+ec_db = pymysql.connections.Connection(host="127.0.0.1", user="root", password="AllVibes02", database="allvibes")#please change the details of the password and database
 # send(): sends a message to a match
 # HTTP POST parameters: current user's id, recepient id, and message contents
+def get_key_for_id(id):
+    ec_cr = ec_db.cursor()
+    ec_cr.execute("SELECT key_value FROM key_table WHERE id = %s", (id,))
+    result = ec_cr.fetchone()
+    ec_cr.close()
+    db.close()
+    return result[0] if result else None
 
 def send():
+    id = request.form["from"]
     sender = user.get_internal_id(request.form["from"])
     recipient = request.form["to"]
+    key=get_key_for_id(id)
 
     # before doing anything, we need to make sure these two users are matches
     response = {}
@@ -24,14 +34,16 @@ def send():
 
     text = request.form["text"]
     text = text.replace("'", "''")
+    text = encrypt_data(text,key)
     attachment = request.form["attachment"]
+    attachment = encrypt_data(attachment,key)
 
     # here we at least know they're matches, so simply insert into the database
     now = datetime.now(timezone.utc)
     date_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
     cursor = db.cursor()
-    count = cursor.execute("INSERT INTO messages (sender, recipient, id, seen, sent_time, text, attachment) VALUES ('" + sender + "', '" + recipient + "', '" + str(id) + "', false, '"+ date_string + "', '" + text + "', '" + attachment + "')")
+    count = cursor.execute("INSERT INTO messages (sender, recipient, id, seen, sent_time, encrypted_text, encrypted_attachment) VALUES ('" + sender + "', '" + recipient + "', '" + str(id) + "', false, '"+ date_string + "', '" + text + "', '" + attachment + "')")
     cursor.close()
 
     if count != 1:
@@ -45,8 +57,10 @@ def send():
 # receive(): receives UNREAD messages
 
 def receive():
+    id=request.args.get("from")
     sender = request.args.get("from")
     recipient = user.get_internal_id(request.args.get("id"))
+    key=get_key_for_id(id)
 
     response = {}
     if match.is_match(sender, recipient) is False:
@@ -67,8 +81,8 @@ def receive():
         message["to"] = request.args.get("id")
         message["id"] = row[3]
         message["timestamp"] = str(row[4])
-        message["text"] = row[6]
-        message["attachment"] = row[7]
+        message["text"] = decrypt_data(row[6],key)
+        message["attachment"] = decrypt_data(row[7],key)
 
         messages.append(message)
     
@@ -84,6 +98,9 @@ def history():
     me = user.get_internal_id(request.args.get("id"))
     context = request.args.get("context")
     page = int(request.args.get("page"))
+    id = request.form["from"]
+    key = get_key_for_id(id)
+
 
     response = {}
     if match.is_match(me, context) is False:
@@ -121,7 +138,7 @@ def history():
         row = cursor.fetchone()
 
         if row[0] == me:
-            message["form"] = request.args.get("id")
+            message["from"] = request.args.get("id")
         else:
             message["from"] = row[0]
 
@@ -132,8 +149,8 @@ def history():
         
         message["id"] = row[3]
         message["timestamp"] = str(row[4])
-        message["text"] = row[6]
-        message["attachment"] = row[7]
+        message["text"] = decrypt_data(row[6],key)
+        message["attachment"] = decrypt_data(row[7],key)
 
         messages.append(message)
         final_count = final_count+1

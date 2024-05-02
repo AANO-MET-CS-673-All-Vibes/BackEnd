@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `accounts` (
 	`id` varchar(36) NOT NULL UNIQUE,
-	`email` varchar(50) NOT NULL UNIQUE,
+	`encrypted_email` varchar(50) NOT NULL UNIQUE,
 	`created` timestamp,
 	PRIMARY KEY (`id`)
 );
@@ -8,12 +8,12 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 CREATE TABLE IF NOT EXISTS `users` (
 	`id` varchar(36) NOT NULL UNIQUE,
 	`internal_id` varchar(36) NOT NULL UNIQUE,
-	`name` varchar(50),
-	`gender` int,
-	`dob` date,
+	`encrypted_name` varchar(50),
+	`encrypted_gender` int,
+	`encrypted_dob` date,
 	`bio` varchar(300),
 	`image` varchar(255),
-	`top_tracks` json,
+	'top_tracks` json,
 	`top_artists` json,
 	`last_updated` date,
 	`last_online` timestamp,
@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS `messages` (
 	`seen` tinyint(1),
 	`sent_time` timestamp,
 	`seen_time` timestamp,
-	`text` varchar(500),
-	`attachment` varchar(500)
+	`encrypted_text` varchar(500),
+	`encrypted_attachment` varchar(500)
 );
 
 
